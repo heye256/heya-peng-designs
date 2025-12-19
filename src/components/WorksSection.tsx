@@ -120,15 +120,8 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
 
   return (
     <section ref={sectionRef} className="relative py-24 min-h-screen">
-      {/* Background Image */}
-      <div className="absolute inset-0">
-        <img 
-          src="/images/works-bg.png" 
-          alt="" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-background/70" />
-      </div>
+      {/* Background */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-card to-background" />
       
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
