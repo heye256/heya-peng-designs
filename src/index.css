@@ -4,6 +4,12 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
 
+@import url("https://fonts.googleapis.com/css2?family=Inter&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap");
+
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap");
+
 @layer base {
   :root {
     --background: 240 10% 4%;
@@ -41,7 +47,7 @@
     --gradient-dark: linear-gradient(180deg, hsl(240, 10%, 4%) 0%, hsl(240, 10%, 8%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(240, 10%, 10%) 0%, hsl(240, 10%, 6%) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(240, 10%, 6%) 0%, hsl(240, 15%, 8%) 50%, hsl(260, 10%, 6%) 100%);
-    
+
     --shadow-gold: 0 0 40px hsl(38, 92%, 50%, 0.2);
     --shadow-card: 0 20px 60px hsl(0, 0%, 0%, 0.4);
     --shadow-elevated: 0 8px 32px hsl(0, 0%, 0%, 0.3);
@@ -51,11 +57,17 @@
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   }
 
   .dark {
     --background: 240 10% 4%;
     --foreground: 0 0% 95%;
+    --font-sans: Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    --font-serif: "Playfair Display", ui-serif, Georgia, Cambria, Times New Roman, Times, serif;
+    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   }
 }
 
