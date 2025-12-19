@@ -17,7 +17,7 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
           className="w-full h-full object-cover"
         >
           <source
-            src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4"
+            src="/videos/hero-bg.mp4"
             type="video/mp4"
           />
         </video>
