@@ -7,13 +7,7 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   return <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
-          <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-hero opacity-90" />
-        
-      </div>
+      
 
       {/* Decorative Elements */}
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
