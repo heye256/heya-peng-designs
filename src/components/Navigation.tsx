@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-
 interface NavigationProps {
   onNavigate: (section: string) => void;
 }
-
-const Navigation = ({ onNavigate }: NavigationProps) => {
+const Navigation = ({
+  onNavigate
+}: NavigationProps) => {
   const [isScrolled, setIsScrolled] = useState(false);
-
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -14,41 +13,24 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'glass-effect py-4' : 'py-6'
-      }`}
-    >
+  return <nav className="">
       <div className="container mx-auto px-6 flex items-center justify-between">
         <div className="text-xl font-bold text-gradient-gold tracking-wider">
           作品集
         </div>
         
         <div className="flex items-center gap-2">
-          <button
-            onClick={() => onNavigate('works')}
-            className="nav-link"
-          >
+          <button onClick={() => onNavigate('works')} className="nav-link">
             作品展示
           </button>
-          <button
-            onClick={() => onNavigate('resume')}
-            className="nav-link"
-          >
+          <button onClick={() => onNavigate('resume')} className="nav-link">
             查看简历
           </button>
-          <button
-            onClick={() => onNavigate('contact')}
-            className="nav-link"
-          >
+          <button onClick={() => onNavigate('contact')} className="nav-link">
             联系方式
           </button>
         </div>
       </div>
-    </nav>
-  );
+    </nav>;
 };
-
 export default Navigation;
