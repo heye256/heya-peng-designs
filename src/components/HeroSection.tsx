@@ -7,7 +7,7 @@ const HeroSection = ({
 }: HeroSectionProps) => {
   return <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
+      <div className="absolute inset-0 z-0 bg-black/[0.93]">
         <video autoPlay muted loop playsInline className="w-full h-full object-cover">
           <source src="https://assets.mixkit.co/videos/preview/mixkit-digital-animation-of-futuristic-devices-99786-large.mp4" type="video/mp4" />
         </video>
@@ -24,9 +24,9 @@ const HeroSection = ({
       {/* Content */}
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up" style={{
+          <h1 style={{
           fontFamily: 'var(--font-display)'
-        }}>
+        }} className="text-6xl md:text-7xl font-bold mb-6 animate-slide-up font-sans text-white lg:text-lg bg-[#27272b]/0">
             <span className="text-foreground">你好，我是</span>
             <br />
             <span className="text-gradient-gold">何亚鹏</span>
