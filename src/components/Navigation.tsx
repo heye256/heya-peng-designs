@@ -17,7 +17,7 @@ const [scrolled, setScrolled] = useState(false);
   return (
     <nav className={`fixed w-full top-0 z-50 transition-all ${scrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent'}`}>
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <div className="text-white font-bold text-xl">何亚鹏</div>
+        <div className="text-white font-bold text-xl">何亚鹏
         <ul className="flex gap-8">
           {navItems.map(item => (
             <li key={item} className="text-white underline decoration-white underline-offset-4 cursor-pointer">
