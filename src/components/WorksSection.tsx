@@ -17,7 +17,7 @@ const categories: Category[] = [
     icon: <Layers className="w-8 h-8" />,
     description: '专注于游戏界面设计，打造沉浸式用户体验',
     images: [
-      'public/image/works/ui.png',
+      '/public/image/works/ui.png',
       'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=800&q=80',
       'https://images.unsplash.com/photo-1538481199705-c710c4e965fc?w=800&q=80',
       'https://images.unsplash.com/photo-1552820728-8b83bb6b2b0c?w=800&q=80',
@@ -29,7 +29,7 @@ const categories: Category[] = [
     icon: <PenTool className="w-8 h-8" />,
     description: '数字绘画与插画创作',
     images: [
-      'public/image/works/huihua.png',
+      '/public/image/works/huihua.png',
       'https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=800&q=80',
       'https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=800&q=80',
       'https://images.unsplash.com/photo-1460661419201-fd4cecdf8a8b?w=800&q=80',
@@ -42,7 +42,7 @@ const categories: Category[] = [
     icon: <Box className="w-8 h-8" />,
     description: '三维建模、材质贴图、渲染及动画制作',
     images: [
-      'public/image/works/3d.png',
+      '/public/image/works/3d.png',
       'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80',
       'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80',
       'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80',
