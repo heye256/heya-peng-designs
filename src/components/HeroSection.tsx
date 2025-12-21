@@ -33,15 +33,13 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
       {/* Content */}
       <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl">
-         <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up flex justify-start items-center flex-wrap"
-    style={{ fontFamily: 'var(--font-display)' }}
->
-  <span className="text-foreground mr-2">你好，我是</span>
-  <span className="text-gradient-gold flex gap-2">
-    <span>何</span><span>亚</span><span>鹏</span>
-  </span>
-</h1>
-
+          <h1 
+            className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
+            <span className="text-foreground">你好，我是</span>
+            <span className="text-gradient-gold">何亚鹏</span>
+          </h1>
           
           <p 
             className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 animate-slide-up max-w-2xl"
