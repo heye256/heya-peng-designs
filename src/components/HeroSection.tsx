@@ -38,7 +38,6 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
             style={{ fontFamily: 'var(--font-display)' }}
           >
             <span className="text-foreground">你好，我是</span>
-            <br />
             <span className="text-gradient-gold">何亚鹏</span>
           </h1>
           
