@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 
 interface NavigationProps {
@@ -21,7 +20,9 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6"
       style={{
         // 黑色半透明背景，滚动前后一致，也可改为透明
-    
+      backgroundColor: isScrolled ? 'rgba(0,0,0,0.6)' : 'transparent'
+
+        backdropFilter: 'blur(10px)', // 增强文字可读性
       }}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
