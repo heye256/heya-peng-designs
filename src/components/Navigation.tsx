@@ -1,53 +1,30 @@
 import { useState, useEffect } from 'react';
-
+import { Mail, MessageCircle, Phone, ChevronDown, X, ChevronLeft, ChevronRight, Layers, Palette, Box, PenTool } from 'lucide-react';
 interface NavigationProps {
   onNavigate: (section: string) => void;
 }
 
 const Navigation = ({ onNavigate }: NavigationProps) => {
-  const [isScrolled, setIsScrolled] = useState(false);
-
+const [scrolled, setScrolled] = useState(false);
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+   const handleScroll = () => {
+    setScrolled(window.scrollY > 20);
+  };
     };
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+    const navItems = ['作品展示', '查看简历', '练习方式'];
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6"
-      style={{
-        backgroundColor: 'transparent', // 删除背景
-        backdropFilter: 'none',
-      }}
-    >
-      <div className="container mx-auto px-6 flex items-center justify-between">
-        <div className="text-xl font-bold text-gradient-gold tracking-wider">
-          作品集
-        </div>
-
-        <div className="flex items-center gap-6">
-          <button
-            onClick={() => onNavigate('works')}
-            className="text-white underline text-lg font-medium hover:text-primary transition-colors"
-          >
-            作品展示
-          </button>
-          <button
-            onClick={() => onNavigate('resume')}
-            className="text-white underline text-lg font-medium hover:text-primary transition-colors"
-          >
-            查看简历
-          </button>
-          <button
-            onClick={() => onNavigate('practice')}
-            className="text-white underline text-lg font-medium hover:text-primary transition-colors"
-          >
-            练习方式
-          </button>
-        </div>
+    <nav className={`fixed w-full top-0 z-50 transition-all ${scrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent'}`}>
+      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
+        <div className="text-white font-bold text-xl">何亚鹏</div>
+        <ul className="flex gap-8">
+          {navItems.map(item => (
+            <li key={item} className="text-white underline decoration-white underline-offset-4 cursor-pointer">
+              {item}
+            </li>
+          ))}
+        </ul>
       </div>
     </nav>
   );
