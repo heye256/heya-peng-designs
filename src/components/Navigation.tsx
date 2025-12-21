@@ -1,30 +1,46 @@
+
 import { useState, useEffect } from 'react';
-import { Mail, MessageCircle, Phone, ChevronDown, X, ChevronLeft, ChevronRight, Layers, Palette, Box, PenTool } from 'lucide-react';
+
 interface NavigationProps {
   onNavigate: (section: string) => void;
 }
 
 const Navigation = ({ onNavigate }: NavigationProps) => {
-const [scrolled, setScrolled] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
   useEffect(() => {
-   const handleScroll = () => {
-    setScrolled(window.scrollY > 20);
-  };
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50); // 滚动超过50px触发背景
     };
     window.addEventListener('scroll', handleScroll);
-    const navItems = ['作品展示', '查看简历', '练习方式'];
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all ${scrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent'}`}>
-      <div className="container mx-auto px-6 py-4 flex justify-between items-center">
-        <div className="text-white font-bold text-xl">何亚鹏</div>
-        <ul className="flex gap-8">
-          {navItems.map(item => (
-            <li key={item} className="text-white underline decoration-white underline-offset-4 cursor-pointer">
-              {item}
-            </li>
-          ))}
-        </ul>
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6"
+      style={{
+        // 黑色半透明背景，滚动前后一致，也可改为透明
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+        backdropFilter: 'blur(10px)', // 增强文字可读性
+      }}
+    >
+      <div className="container mx-auto px-6 flex items-center justify-between">
+        <div className="text-xl font-bold text-gradient-gold tracking-wider">
+          作品集
+        </div>
+
+        <div className="flex items-center gap-2">
+          <button onClick={() => onNavigate('works')} className="nav-link">
+            作品展示
+          </button>
+          <button onClick={() => onNavigate('resume')} className="nav-link">
+            查看简历
+          </button>
+          <button onClick={() => onNavigate('contact')} className="nav-link">
+            联系方式
+          </button>
+        </div>
       </div>
     </nav>
   );
