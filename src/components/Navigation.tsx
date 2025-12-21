@@ -9,7 +9,7 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50); // 滚动超过50px触发背景
+      setIsScrolled(window.scrollY > 50);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -19,10 +19,8 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
     <nav
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-500 py-6"
       style={{
-        // 黑色半透明背景，滚动前后一致，也可改为透明
-      backgroundColor: isScrolled ? 'rgba(0,0,0,0.6)' : 'transparent'
-
-        backdropFilter: 'blur(10px)', // 增强文字可读性
+        backgroundColor: 'transparent', // 删除背景
+        backdropFilter: 'none',
       }}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
@@ -30,15 +28,24 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
           作品集
         </div>
 
-        <div className="flex items-center gap-2">
-          <button onClick={() => onNavigate('works')} className="nav-link">
+        <div className="flex items-center gap-6">
+          <button
+            onClick={() => onNavigate('works')}
+            className="text-white underline text-lg font-medium hover:text-primary transition-colors"
+          >
             作品展示
           </button>
-          <button onClick={() => onNavigate('resume')} className="nav-link">
+          <button
+            onClick={() => onNavigate('resume')}
+            className="text-white underline text-lg font-medium hover:text-primary transition-colors"
+          >
             查看简历
           </button>
-          <button onClick={() => onNavigate('contact')} className="nav-link">
-            联系方式
+          <button
+            onClick={() => onNavigate('practice')}
+            className="text-white underline text-lg font-medium hover:text-primary transition-colors"
+          >
+            练习方式
           </button>
         </div>
       </div>
