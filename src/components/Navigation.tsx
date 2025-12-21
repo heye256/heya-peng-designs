@@ -12,7 +12,7 @@ const [scrolled, setScrolled] = useState(false);
   };
     };
     window.addEventListener('scroll', handleScroll);
-    const navItems = ['作品展示', '查看简历', '练习方式'];
+    const navItems = ['作品展示', '查看简历', '联系方式'];
 
   return (
     <nav className={`fixed w-full top-0 z-50 transition-all ${scrolled ? 'bg-black/50 backdrop-blur-md' : 'bg-transparent'}`}>
