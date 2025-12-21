@@ -8,22 +8,23 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-        >
-          <source
-            src="/videos/hero-bg.mp4"
-            type="video/mp4"
-          />
-        </video>
-        <div className="absolute inset-0 bg-gradient-hero opacity-0" />
-<div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent" />
-      </div>
+     {/* Video Background */}
+<div className="absolute inset-0 z-0">
+  <video
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="w-full h-full object-cover"
+  >
+    <source src="/videos/hero-bg.mp4" type="video/mp4" />
+  </video>
+
+  {/* 可选：透明遮罩保持布局 */}
+  <div className="absolute inset-0 bg-gradient-hero opacity-0" />
+  <div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent" />
+</div>
+
 
       {/* Decorative Elements */}
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
