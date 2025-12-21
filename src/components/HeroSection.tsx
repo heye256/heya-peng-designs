@@ -37,8 +37,8 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
             className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-slide-up"
             style={{ fontFamily: 'var(--font-display)' }}
           >
-            <span className="text-foreground block">你好，我是</span>
-            <span className="text-gradient-gold block">何亚鹏</span>
+            <span className="text-foreground block">你好，我是
+            <span className="text-gradient-gold block">何亚鹏
           </h1>
 
           <p
