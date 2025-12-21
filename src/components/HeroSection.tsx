@@ -21,8 +21,8 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
             type="video/mp4"
           />
         </video>
-        <div className="absolute inset-0 bg-gradient-hero opacity-90" />
-        <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-hero opacity-0" />
+<div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent" />
       </div>
 
       {/* Decorative Elements */}
