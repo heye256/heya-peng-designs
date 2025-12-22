@@ -459,7 +459,11 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
       {/* Main Scrollable Content */}
       <div 
         ref={contentRef}
-        className={`h-full overflow-y-auto scroll-smooth transition-all duration-300 ease-out ${getTransitionClass()}`}
+        className={`h-full scroll-smooth transition-all duration-300 ease-out
+  ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}
+  ${getTransitionClass()}
+`}
+
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
