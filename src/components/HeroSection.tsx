@@ -1,4 +1,3 @@
-
 import { ChevronDown } from 'lucide-react';
 interface HeroSectionProps {
   onBrowseWorks: () => void;
@@ -13,7 +12,7 @@ const HeroSection = ({
           <source src="/videos/hero-bg.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-gradient-hero opacity-0" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent bg-secondary-foreground" />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent bg-[#f2f2f2]/0" />
       </div>
 
       {/* Decorative Elements */}
@@ -34,7 +33,7 @@ const HeroSection = ({
           
           <p style={{
           animationDelay: '0.2s'
-        }} className="text-lg md:text-xl leading-relaxed mb-8 animate-slide-up max-w-2xl text-center text-white mx-[15px]">专注平面设计与3D美术。 熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
+        }} className="text-lg md:text-xl leading-relaxed mb-8 animate-slide-up max-w-2xl text-center text-white mx-[11px]">专注平面设计与3D美术。 熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
   熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
         </p>
 
