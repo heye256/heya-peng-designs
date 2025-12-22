@@ -1,4 +1,4 @@
-useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 interface ProjectImage {
@@ -91,7 +91,7 @@ const Lightbox = ({
         )}
       </div>
 
-      {/* 固定底部缩略图条 */}
+      {/* 缩略图 */}
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto z-20">
         {images.map((img, idx) => (
           <button
@@ -113,15 +113,15 @@ const Lightbox = ({
 };
 
 // LazyImage Component
-const LazyImage = ({ 
-  src, 
-  alt, 
+const LazyImage = ({
+  src,
+  alt,
   className,
   priority = false,
   onClick,
-}: { 
-  src: string; 
-  alt: string; 
+}: {
+  src: string;
+  alt: string;
   className?: string;
   priority?: boolean;
   onClick?: () => void;
@@ -149,13 +149,13 @@ const LazyImage = ({
   }, [priority]);
 
   return (
-    <div 
-      ref={imgRef} 
+    <div
+      ref={imgRef}
       className={`relative overflow-hidden group cursor-pointer ${className}`}
       onClick={onClick}
     >
       {!isLoaded && <div className="absolute inset-0 bg-card animate-pulse" />}
-      
+
       {isInView && (
         <>
           <img
@@ -190,28 +190,31 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   const currentProject = projects[currentIndex];
   const totalProjects = projects.length;
 
-  const goToProject = useCallback((direction: 'prev' | 'next') => {
-    if (isTransitioning) return;
-    const now = Date.now();
-    if (now - lastScrollTime.current < 600) return;
-    lastScrollTime.current = now;
-    if (direction === 'next' && currentIndex >= totalProjects - 1) return;
-    if (direction === 'prev' && currentIndex <= 0) return;
+  const goToProject = useCallback(
+    (direction: 'prev' | 'next') => {
+      if (isTransitioning) return;
+      const now = Date.now();
+      if (now - lastScrollTime.current < 600) return;
+      lastScrollTime.current = now;
+      if (direction === 'next' && currentIndex >= totalProjects - 1) return;
+      if (direction === 'prev' && currentIndex <= 0) return;
 
-    setIsTransitioning(true);
-    setScrollDirection(direction === 'next' ? 'down' : 'up');
-
-    setTimeout(() => {
-      setCurrentIndex(direction === 'next' ? currentIndex + 1 : currentIndex - 1);
-      if (contentRef.current) contentRef.current.scrollTop = 0;
-      edgeScrollCount.current = 0;
+      setIsTransitioning(true);
+      setScrollDirection(direction === 'next' ? 'down' : 'up');
 
       setTimeout(() => {
-        setIsTransitioning(false);
-        setScrollDirection(null);
-      }, 100);
-    }, 300);
-  }, [currentIndex, totalProjects, isTransitioning]);
+        setCurrentIndex(direction === 'next' ? currentIndex + 1 : currentIndex - 1);
+        if (contentRef.current) contentRef.current.scrollTop = 0;
+        edgeScrollCount.current = 0;
+
+        setTimeout(() => {
+          setIsTransitioning(false);
+          setScrollDirection(null);
+        }, 100);
+      }, 300);
+    },
+    [currentIndex, totalProjects, isTransitioning]
+  );
 
   const checkScrollBoundary = useCallback(() => {
     const content = contentRef.current;
@@ -255,10 +258,14 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
 
     const content = contentRef.current;
     if (content) content.addEventListener('wheel', handleWheel, { passive: false });
-    return () => { if (content) content.removeEventListener('wheel', handleWheel); };
+    return () => {
+      if (content) content.removeEventListener('wheel', handleWheel);
+    };
   }, [goToProject, checkScrollBoundary, isTransitioning, currentIndex, totalProjects]);
 
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartY.current = e.touches[0].clientY; };
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartY.current = e.touches[0].clientY;
+  };
   const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
     const diff = touchStartY.current - touchEndY;
@@ -279,7 +286,12 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToProject, onClose, checkScrollBoundary]);
 
-  useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
 
   const getTransitionClass = () => {
     if (!isTransitioning) return 'opacity-100 translate-y-0';
@@ -320,7 +332,9 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
           onClick={() => goToProject('next')}
           disabled={currentIndex === totalProjects - 1}
           className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
-            currentIndex === totalProjects - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-primary/20 text-foreground hover:text-primary'
+            currentIndex === totalProjects - 1
+              ? 'opacity-30 cursor-not-allowed'
+              : 'hover:bg-primary/20 text-foreground hover:text-primary'
           }`}
         >
           <ChevronDown className="w-6 h-6" />
@@ -352,45 +366,45 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         ))}
       </div>
 
-      <div 
+      <div
         ref={contentRef}
-        className={`h-full transition-all duration-300 ease-out ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'} ${getTransitionClass()}`}
+        className={`h-full transition-all duration-300 ease-out ${
+          lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'
+        } ${getTransitionClass()}`}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
       >
         <div className="container mx-auto px-6 py-24">
           <div className="mb-12">
-            <div className="flex items-center gap-4 mb-6">
+            {/* 左上角标题 + 工具 + 描述 */}
+            <div className="flex items-center gap-4 mb-4">
               <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">
                 {currentProject.icon}
               </div>
-
-              {lightboxIndex !== null && (
-                <Lightbox
-                  images={currentProject.images}
-                  currentIndex={lightboxIndex}
-                  onClose={() => setLightboxIndex(null)}
-                  onNavigate={setLightboxIndex}
-                />
-              )}
-
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-foreground">{currentProject.title}</h1>
-                {currentProject.subtitle && <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>}
+                {currentProject.subtitle && (
+                  <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>
+                )}
               </div>
             </div>
 
-            <p className="text-muted-foreground text-lg max-w-3xl mb-6">{currentProject.description}</p>
-
-            <div className="flex flex-wrap gap-2">
+            {/* 工具列表在标题下面 */}
+            <div className="flex flex-wrap gap-2 mb-6">
               {currentProject.tools.map((tool, index) => (
-                <span key={index} className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors">
+                <span
+                  key={index}
+                  className="px-3 py-1 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                >
                   {tool}
                 </span>
               ))}
             </div>
+
+            <p className="text-muted-foreground text-lg max-w-3xl">{currentProject.description}</p>
           </div>
 
+          {/* 项目图片 */}
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
             {currentProject.images.map((image, index) => (
               <LazyImage
@@ -404,6 +418,7 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
             ))}
           </div>
 
+          {/* 底部提示 */}
           <div className="mt-16 pb-8 text-center">
             {currentIndex < totalProjects - 1 ? (
               <div className="flex flex-col items-center gap-2 text-muted-foreground">
@@ -411,9 +426,21 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
                 <ChevronDown className="w-6 h-6 animate-bounce" />
               </div>
             ) : (
-              <div className="text-muted-foreground"><span className="text-sm">已是最后一个项目</span></div>
+              <div className="text-muted-foreground">
+                <span className="text-sm">已是最后一个项目</span>
+              </div>
             )}
           </div>
+
+          {/* Lightbox */}
+          {lightboxIndex !== null && (
+            <Lightbox
+              images={currentProject.images}
+              currentIndex={lightboxIndex}
+              onClose={() => setLightboxIndex(null)}
+              onNavigate={setLightboxIndex}
+            />
+          )}
         </div>
       </div>
     </div>
