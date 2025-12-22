@@ -161,7 +161,7 @@ const ProjectDetail = ({
           </div>
 
           {/* Masonry Images */}
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 mx-[39px]">
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 mx-[52px] my-[4px] px-[120px] py-[2px]">
             {currentProject.images.map((img, idx) => <LazyImage key={`${currentProject.id}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
           </div>
         </div>
