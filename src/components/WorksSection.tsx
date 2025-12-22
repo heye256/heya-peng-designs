@@ -50,9 +50,9 @@ const categories: Category[] = [
       { src: '/image/works/huihua/018.png', alt: '传统绘画' },
       { src: '/image/works/huihua/019.png', alt: '传统绘画' },
       { src: '/image/works/huihua/020.png', alt: '传统绘画' },
-      { src: '/videos/011.jpg', alt: '传统绘画' },
-      { src: '/videos/012.png', alt: '传统绘画' },
-      { src: '/videos/013.jpg', alt: '传统绘画' },
+      { src: '/011.jpg', alt: '传统绘画' },
+      { src: '/012.png', alt: '传统绘画' },
+      { src: '/013.jpg', alt: '传统绘画' },
       
     ],
   },
