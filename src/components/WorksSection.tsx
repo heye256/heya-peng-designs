@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { Layers, Palette, Box, PenTool } from 'lucide-react';
 import ProjectDetail from './ProjectDetail';
@@ -101,8 +102,9 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
 
   return (
     <section ref={sectionRef} className="relative py-24 min-h-screen">
+      {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card to-background" />
-
+      
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
@@ -117,8 +119,10 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
             <div
               key={category.id}
               onClick={() => openProject(index)}
-              className="section-card cursor-pointer group h-[450px] md:h-[500px] relative overflow-hidden rounded-xl shadow-lg"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="section-card cursor-pointer group h-[450px] md:h-[500px]"
+              style={{ 
+                animationDelay: `${index * 0.1}s`,
+              }}
             >
               {/* Background Image */}
               <div className="absolute inset-0">
@@ -146,7 +150,7 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                   </div>
                 </div>
                 <p className="text-muted-foreground line-clamp-2">{category.description}</p>
-
+                
                 {/* Tools Preview */}
                 <div className="flex flex-wrap gap-2 mt-4">
                   {category.tools.slice(0, 3).map((tool, toolIndex) => (
