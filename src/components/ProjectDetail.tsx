@@ -1,5 +1,6 @@
 
 
+
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
@@ -459,11 +460,15 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
 
       {/* Main Scrollable Content */}
       <div 
-        ref={contentRef}
-        className={`h-full overflow-y-auto scroll-smooth transition-all duration-300 ease-out ${getTransitionClass()}`}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
-      >
+  ref={contentRef}
+  className={`h-full transition-all duration-300 ease-out
+    ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}
+    ${getTransitionClass()}
+  `}
+  onTouchStart={handleTouchStart}
+  onTouchEnd={handleTouchEnd}
+>
+
         <div className="container mx-auto px-6 py-24">
           {/* Project Header */}
           <div className="mb-12">
