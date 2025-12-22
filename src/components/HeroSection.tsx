@@ -33,7 +33,7 @@ const HeroSection = ({
           
           <p style={{
           animationDelay: '0.2s'
-        }} className="text-lg md:text-xl leading-relaxed mb-8 animate-slide-up max-w-2xl text-center text-white">专注平面设计与3D美术。 熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
+        }} className="text-lg md:text-xl leading-relaxed mb-8 animate-slide-up max-w-2xl text-center text-white mx-[9px]">专注平面设计与3D美术。 熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
   熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
         </p>
 
@@ -41,7 +41,7 @@ const HeroSection = ({
           <div style={{
           animationDelay: '0.4s'
         }} className="animate-slide-up my-0 mx-[222px] border-0">
-            <button onClick={onBrowseWorks} className="hero-button group font-bold rounded-sm shadow-sm opacity-100 my-0 mb-0 mr-0 text-center mx-0 px-[31px] py-[6px] text-2xl font-sans">
+            <button onClick={onBrowseWorks} className="hero-button group font-bold shadow-sm opacity-100 my-0 mb-0 mr-0 text-center mx-0 px-[31px] py-[6px] text-2xl font-sans rounded-2xl">
               <span className="flex items-center gap-2 mx-[12px] my-[6px] text-center">
                 浏览作品
                 <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
