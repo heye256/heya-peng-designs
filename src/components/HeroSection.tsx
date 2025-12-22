@@ -17,7 +17,7 @@ const HeroSection = ({
       </div>
 
       {/* Content */}
-      <div className="relative z-10 w-full">
+      <div className="relative z-10 w-full mr-[240px] px-0 pr-[240px] ml-0 pl-0">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl">
             {/* 标题 */}
@@ -31,7 +31,7 @@ const HeroSection = ({
             </h1>
 
             {/* 描述文字 */}
-            <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify">
+            <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify text-white">
               专注
               <span className="text-primary font-medium"> 平面设计 </span>
               与
