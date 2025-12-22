@@ -1,49 +1,63 @@
+
 import { ChevronDown } from 'lucide-react';
+
 interface HeroSectionProps {
   onBrowseWorks: () => void;
 }
-const HeroSection = ({
-  onBrowseWorks
-}: HeroSectionProps) => {
-  return <section className="relative min-h-screen flex items-center overflow-hidden">
+
+const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
+  return (
+    <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
-          <source src="/videos/hero-bg.mp4" type="video/mp4" />
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source
+            src="/videos/hero-bg.mp4"
+            type="video/mp4"
+          />
         </video>
         <div className="absolute inset-0 bg-gradient-hero opacity-0" />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent bg-secondary-foreground" />
+<div className="absolute inset-0 bg-gradient-to-r from-background via-background/0 to-transparent" />
       </div>
 
       {/* Decorative Elements */}
       <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-float" />
-      <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-primary/5 rounded-full blur-2xl animate-float" style={{
-      animationDelay: '2s'
-    }} />
+      <div className="absolute bottom-1/4 right-1/3 w-64 h-64 bg-primary/5 rounded-full blur-2xl animate-float" style={{ animationDelay: '2s' }} />
 
       {/* Content */}
-      <div className="container relative z-10 my-0 px-[8px] mx-0">
+      <div className="container mx-auto px-6 relative z-10">
         <div className="max-w-3xl">
-          <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up" style={{
-          fontFamily: 'var(--font-display)'
-        }}>
+          <h1 
+            className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up"
+            style={{ fontFamily: 'var(--font-display)' }}
+          >
             <span className="text-foreground">你好，我是</span>
             <span className="text-gradient-gold">何亚鹏</span>
           </h1>
           
-          <p style={{
-          animationDelay: '0.2s'
-        }} className="text-lg md:text-xl text-white leading-relaxed mb-8 animate-slide-up max-w-2xl text-center">
-  专注<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
-  熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
-        </p>
+          <p 
+            className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 animate-slide-up max-w-2xl"
+            style={{ animationDelay: '0.2s' }}
+          >
+            专注<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
+            熟悉 PS、AI、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
+          </p>
 
-
-          <div style={{
-          animationDelay: '0.4s'
-        }} className="animate-slide-up my-0 mx-[222px] border-0">
-            <button onClick={onBrowseWorks} className="hero-button group font-bold rounded-sm shadow-sm opacity-100 my-0 mb-0 mr-0 text-center mx-0 px-[31px] py-[6px] text-2xl font-sans">
-              <span className="flex items-center gap-2 mx-[12px] my-[6px] text-center">
+          <div 
+            className="animate-slide-up"
+            style={{ animationDelay: '0.4s' }}
+          >
+            <button 
+              onClick={onBrowseWorks}
+              className="hero-button group"
+            >
+              <span className="flex items-center gap-2">
                 浏览作品
                 <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
               </span>
@@ -56,6 +70,8 @@ const HeroSection = ({
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
         <ChevronDown className="w-8 h-8 text-primary/60" />
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;
