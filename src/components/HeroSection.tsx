@@ -22,18 +22,19 @@ const HeroSection = ({
     }} />
 
       {/* Content */}
-      <div className="container relative z-10 my-0 px-[8px] mx-px">
+      <div className="container relative z-10 my-0 px-[8px] mx-0">
         <div className="max-w-3xl">
           <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold mb-6 animate-slide-up" style={{
           fontFamily: 'var(--font-display)'
         }}>
-            <span className="text-foreground mx-0">你好，我是</span>
+            <span className="text-foreground">你好，我是</span>
             <span className="text-gradient-gold">何亚鹏</span>
           </h1>
           
           <p style={{
           animationDelay: '0.2s'
-        }} className="text-lg md:text-xl leading-relaxed mb-8 animate-slide-up max-w-2xl text-center text-white">专注平面设计与3D美术。 熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
+        }} className="text-lg md:text-xl text-white leading-relaxed mb-8 animate-slide-up max-w-2xl text-center">
+  专注<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
   熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
         </p>
 
