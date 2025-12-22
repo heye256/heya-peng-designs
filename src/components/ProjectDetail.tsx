@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useCallback } from 'react';
-import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { X, ZoomIn } from 'lucide-react';
 
 interface ProjectImage {
   src: string;
@@ -7,7 +7,7 @@ interface ProjectImage {
 }
 
 interface Project3DCategory {
-  name: string; 
+  name: string;
   images: ProjectImage[];
 }
 
@@ -19,7 +19,7 @@ interface Project {
   tools: string[];
   images: ProjectImage[];
   icon: React.ReactNode;
-  categories3D?: Project3DCategory[]; // 3D项目专用
+  categories3D?: Project3DCategory[]; // 新增3D分类
 }
 
 interface ProjectDetailProps {
@@ -28,7 +28,7 @@ interface ProjectDetailProps {
   onClose: () => void;
 }
 
-// Lightbox Component
+/* ===================== Lightbox ===================== */
 const Lightbox = ({
   images,
   currentIndex,
@@ -55,15 +55,15 @@ const Lightbox = ({
   }, [currentIndex, images.length, onClose, onNavigate]);
 
   return (
-    <div className="fixed inset-0 z-[60] bg-black/95 flex flex-col items-center justify-center" onClick={onClose}>
-      <div className="absolute top-4 left-4 z-10 px-4 py-2 rounded-full bg-white/10 text-white text-sm">
+    <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center" onClick={onClose}>
+      <div className="absolute top-4 left-4 px-4 py-2 rounded-full bg-white/10 text-white text-sm">
         {currentIndex + 1} / {images.length}
       </div>
 
-      <div className="relative flex items-center justify-center max-w-[90vw] max-h-[80vh]" onClick={(e) => e.stopPropagation()}>
+      <div className="relative max-w-[90vw] max-h-[80vh] flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
         {currentIndex > 0 && (
           <button onClick={() => onNavigate(currentIndex - 1)} className="absolute -left-12 text-white/70 hover:text-white transition">
-            <ChevronLeft className="w-10 h-10" />
+            &#8249;
           </button>
         )}
 
@@ -76,12 +76,12 @@ const Lightbox = ({
 
         {currentIndex < images.length - 1 && (
           <button onClick={() => onNavigate(currentIndex + 1)} className="absolute -right-12 text-white/70 hover:text-white transition">
-            <ChevronRight className="w-10 h-10" />
+            &#8250;
           </button>
         )}
       </div>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto z-20">
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto">
         {images.map((img, idx) => (
           <button
             key={idx}
@@ -101,7 +101,7 @@ const Lightbox = ({
   );
 };
 
-// LazyImage Component
+/* ===================== Lazy Image ===================== */
 const LazyImage = ({ src, alt, className, priority = false, onClick }: { src: string; alt: string; className?: string; priority?: boolean; onClick?: () => void }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
@@ -118,6 +118,7 @@ const LazyImage = ({ src, alt, className, priority = false, onClick }: { src: st
         observer.disconnect();
       }
     }, { rootMargin: '200px' });
+
     if (imgRef.current) observer.observe(imgRef.current);
     return () => observer.disconnect();
   }, [priority]);
@@ -143,244 +144,97 @@ const LazyImage = ({ src, alt, className, priority = false, onClick }: { src: st
   );
 };
 
+/* ===================== Project Detail ===================== */
 const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetailProps) => {
   const [currentIndex, setCurrentIndex] = useState(initialProjectIndex);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const lastScrollTime = useRef(0);
-  const touchStartY = useRef(0);
-  const edgeScrollCount = useRef(0);
-  const lastEdgeTime = useRef(0);
 
   const currentProject = projects[currentIndex];
-  const totalProjects = projects.length;
-
-  const goToProject = useCallback(
-    (direction: 'prev' | 'next') => {
-      if (isTransitioning) return;
-      const now = Date.now();
-      if (now - lastScrollTime.current < 600) return;
-      lastScrollTime.current = now;
-      if (direction === 'next' && currentIndex >= totalProjects - 1) return;
-      if (direction === 'prev' && currentIndex <= 0) return;
-
-      setIsTransitioning(true);
-      setScrollDirection(direction === 'next' ? 'down' : 'up');
-
-      setTimeout(() => {
-        setCurrentIndex(direction === 'next' ? currentIndex + 1 : currentIndex - 1);
-        if (contentRef.current) contentRef.current.scrollTop = 0;
-        edgeScrollCount.current = 0;
-
-        setTimeout(() => {
-          setIsTransitioning(false);
-          setScrollDirection(null);
-        }, 100);
-      }, 300);
-    },
-    [currentIndex, totalProjects, isTransitioning]
-  );
-
-  const checkScrollBoundary = useCallback(() => {
-    const content = contentRef.current;
-    if (!content) return { atTop: true, atBottom: true };
-    const atTop = content.scrollTop <= 5;
-    const atBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 5;
-    return { atTop, atBottom };
-  }, []);
-
-  useEffect(() => {
-    const handleWheel = (e: WheelEvent) => {
-      const content = contentRef.current;
-      if (!content || isTransitioning) return;
-      const { atTop, atBottom } = checkScrollBoundary();
-      const now = Date.now();
-
-      if (e.deltaY > 20 && atBottom && currentIndex < totalProjects - 1) {
-        e.preventDefault();
-        edgeScrollCount.current = now - lastEdgeTime.current < 500 ? edgeScrollCount.current + 1 : 1;
-        lastEdgeTime.current = now;
-        if (edgeScrollCount.current >= 2) {
-          goToProject('next');
-          edgeScrollCount.current = 0;
-        }
-        return;
-      }
-
-      if (e.deltaY < -20 && atTop && currentIndex > 0) {
-        e.preventDefault();
-        edgeScrollCount.current = now - lastEdgeTime.current < 500 ? edgeScrollCount.current + 1 : 1;
-        lastEdgeTime.current = now;
-        if (edgeScrollCount.current >= 2) {
-          goToProject('prev');
-          edgeScrollCount.current = 0;
-        }
-        return;
-      }
-
-      if (!atTop && !atBottom) edgeScrollCount.current = 0;
-    };
-
-    const content = contentRef.current;
-    if (content) content.addEventListener('wheel', handleWheel, { passive: false });
-    return () => { if (content) content.removeEventListener('wheel', handleWheel); };
-  }, [goToProject, checkScrollBoundary, isTransitioning, currentIndex, totalProjects]);
-
-  const handleTouchStart = (e: React.TouchEvent) => { touchStartY.current = e.touches[0].clientY; };
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    const touchEndY = e.changedTouches[0].clientY;
-    const diff = touchStartY.current - touchEndY;
-    const { atTop, atBottom } = checkScrollBoundary();
-    if (Math.abs(diff) > 80) {
-      if (diff > 0 && atBottom) goToProject('next');
-      else if (diff < 0 && atTop) goToProject('prev');
-    }
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-      if ((e.key === 'End' || e.key === 'PageDown') && checkScrollBoundary().atBottom) goToProject('next');
-      if ((e.key === 'Home' || e.key === 'PageUp') && checkScrollBoundary().atTop) goToProject('prev');
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToProject, onClose, checkScrollBoundary]);
-
-  useEffect(() => { document.body.style.overflow = 'hidden'; return () => { document.body.style.overflow = ''; }; }, []);
-
-  const getTransitionClass = () => {
-    if (!isTransitioning) return 'opacity-100 translate-y-0';
-    if (scrollDirection === 'down') return 'opacity-0 -translate-y-8';
-    if (scrollDirection === 'up') return 'opacity-0 translate-y-8';
-    return '';
-  };
 
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-hidden">
+      {/* Close Button */}
       {lightboxIndex === null && (
         <button onClick={onClose} className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all">
           <X className="w-6 h-6" />
         </button>
       )}
 
-      <div className="fixed top-6 left-6 z-50 flex items-center gap-4">
-        <div className="px-4 py-2 rounded-full bg-card/80 backdrop-blur-sm">
-          <span className="text-primary font-semibold">{currentIndex + 1}</span>
-          <span className="text-muted-foreground"> / {totalProjects}</span>
-        </div>
-      </div>
-
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
-        <button onClick={() => goToProject('prev')} disabled={currentIndex === 0} className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${currentIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-primary/20 text-foreground hover:text-primary'}`}>
-          <ChevronUp className="w-6 h-6" />
-        </button>
-        <button onClick={() => goToProject('next')} disabled={currentIndex === totalProjects - 1} className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${currentIndex === totalProjects - 1 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-primary/20 text-foreground hover:text-primary'}`}>
-          <ChevronDown className="w-6 h-6" />
-        </button>
-      </div>
-
-      <div className="fixed left-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
-        {projects.map((_, index) => (
-          <button key={index} onClick={() => {
-            if (!isTransitioning && index !== currentIndex) {
-              setIsTransitioning(true);
-              setScrollDirection(index > currentIndex ? 'down' : 'up');
-              setTimeout(() => {
-                setCurrentIndex(index);
-                if (contentRef.current) contentRef.current.scrollTop = 0;
-                setTimeout(() => {
-                  setIsTransitioning(false);
-                  setScrollDirection(null);
-                }, 100);
-              }, 300);
-            }
-          }} className={`w-3 h-3 rounded-full transition-all ${index === currentIndex ? 'bg-primary scale-125' : 'bg-muted hover:bg-primary/50'}`} />
-        ))}
-      </div>
-
-      <div ref={contentRef} className={`h-full transition-all duration-300 ease-out ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'} ${getTransitionClass()}`} onTouchStart={handleTouchStart} onTouchEnd={handleTouchEnd}>
+      {/* Scrollable Content */}
+      <div ref={contentRef} className={`h-full ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         <div className="container mx-auto px-6 py-24">
-          <div className="mb-12">
-            {/* 标题 + 副标题 */}
-            <div className="flex items-center gap-4 mb-4">
-              <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">{currentProject.icon}</div>
-              <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground">{currentProject.title}</h1>
-                {currentProject.subtitle && <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>}
-              </div>
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">{currentProject.icon}</div>
+            <div>
+              <h1 className="text-4xl md:text-5xl font-bold text-foreground">{currentProject.title}</h1>
+              {currentProject.subtitle && <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>}
             </div>
-
-            {/* 工具列表 */}
-            <div className="flex flex-wrap gap-2 mb-6">
-              {currentProject.tools.map((tool, idx) => (
-                <span key={idx} className="px-3 py-1 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors">{tool}</span>
-              ))}
-            </div>
-
-            {/* 描述 */}
-            <p className="text-muted-foreground text-lg max-w-3xl">{currentProject.description}</p>
-
-            {/* 3D分类模块 */}
-            {currentProject.categories3D && currentProject.categories3D.length > 0 && (
-              <div className="mt-12">
-                <h2 className="text-2xl font-bold text-foreground mb-4">3D 分类展示</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {currentProject.categories3D.map((category, idx) => (
-                    <div key={idx} className="bg-card p-4 rounded-xl shadow-card">
-                      <h3 className="font-semibold text-lg mb-2">{category.name}</h3>
-                      <div className="flex flex-col gap-2">
-                        {category.images.map((img, index) => (
-                          <LazyImage
-                            key={index}
-                            src={img.src}
-                            alt={img.alt || `${category.name} - Image ${index + 1}`}
-                            className="rounded-lg object-cover w-full h-32"
-                            onClick={() => setLightboxIndex(0)}
-                          />
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* 项目图片 */}
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
-            {currentProject.images.map((image, index) => (
-              <LazyImage key={`${currentProject.id}-${index}`} src={image.src} alt={image.alt || `${currentProject.title} - Image ${index + 1}`} className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300" priority={index < 3} onClick={() => setLightboxIndex(index)} />
+          {/* Description */}
+          <p className="text-muted-foreground text-lg max-w-3xl mb-6">{currentProject.description}</p>
+
+          {/* Tools */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {currentProject.tools.map((tool, index) => (
+              <span key={index} className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors">
+                {tool}
+              </span>
             ))}
           </div>
 
-          {/* 底部提示 */}
-          <div className="mt-16 pb-8 text-center">
-            {currentIndex < totalProjects - 1 ? (
-              <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                <span className="text-sm">滚动到底部后继续向下滚动查看下一个项目</span>
-                <ChevronDown className="w-6 h-6 animate-bounce" />
+          {/* 3D分类板块 */}
+          {currentProject.categories3D && currentProject.categories3D.length > 0 && (
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-foreground mb-4">3D 分类展示</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {currentProject.categories3D.map((category, idx) => (
+                  <div key={idx} className="bg-card p-4 rounded-xl shadow-card">
+                    <h3 className="font-semibold text-lg mb-2">{category.name}</h3>
+                    <div className="flex flex-col gap-2">
+                      {category.images.map((img, index) => (
+                        <LazyImage
+                          key={index}
+                          src={img.src}
+                          alt={img.alt || `${category.name} - Image ${index + 1}`}
+                          className="rounded-lg object-cover w-full h-32"
+                          onClick={() => setLightboxIndex(0)}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                ))}
               </div>
-            ) : (
-              <div className="text-muted-foreground">
-                <span className="text-sm">已是最后一个项目</span>
-              </div>
-            )}
-          </div>
-
-          {/* Lightbox */}
-          {lightboxIndex !== null && (
-            <Lightbox
-              images={currentProject.images}
-              currentIndex={lightboxIndex}
-              onClose={() => setLightboxIndex(null)}
-              onNavigate={setLightboxIndex}
-            />
+            </div>
           )}
+
+          {/* Masonry Images */}
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+            {currentProject.images.map((img, idx) => (
+              <LazyImage
+                key={`${currentProject.id}-${idx}`}
+                src={img.src}
+                alt={img.alt || `${currentProject.title} - Image ${idx + 1}`}
+                className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300"
+                priority={idx < 3}
+                onClick={() => setLightboxIndex(idx)}
+              />
+            ))}
+          </div>
         </div>
       </div>
+
+      {/* Lightbox */}
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={currentProject.images}
+          currentIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+          onNavigate={setLightboxIndex}
+        />
+      )}
     </div>
   );
 };
