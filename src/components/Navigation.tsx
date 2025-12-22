@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 interface NavigationProps {
   onNavigate: (section: string) => void;
