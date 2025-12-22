@@ -8,7 +8,7 @@ import {
   ZoomIn,
 } from 'lucide-react';
 
-/* ================= Types ================= */
+/* ===================== Types ===================== */
 
 interface ProjectImage {
   src: string;
@@ -31,7 +31,7 @@ interface ProjectDetailProps {
   onClose: () => void;
 }
 
-/* ================= Lightbox ================= */
+/* ===================== Lightbox ===================== */
 
 const Lightbox = ({
   images,
@@ -49,12 +49,10 @@ const Lightbox = ({
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && currentIndex > 0) {
+      if (e.key === 'ArrowLeft' && currentIndex > 0)
         onNavigate(currentIndex - 1);
-      }
-      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
+      if (e.key === 'ArrowRight' && currentIndex < images.length - 1)
         onNavigate(currentIndex + 1);
-      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
@@ -68,45 +66,46 @@ const Lightbox = ({
     <div
       className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
       onClick={onClose}
+      onWheel={(e) => e.preventDefault()}
     >
-      {/* 计数 */}
-      <div className="absolute top-4 left-4 text-white/80 text-sm">
+      {/* Counter */}
+      <div className="absolute top-4 left-4 px-4 py-2 rounded-full bg-white/10 text-white text-sm">
         {currentIndex + 1} / {images.length}
       </div>
 
-      {/* 图片 */}
+      {/* Image */}
       <div
         className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {currentIndex > 0 && (
           <button
-            className="absolute -left-14 text-white/70 hover:text-white"
             onClick={() => onNavigate(currentIndex - 1)}
+            className="absolute -left-12 text-white/70 hover:text-white"
           >
-            <ChevronLeft size={48} />
+            <ChevronLeft className="w-10 h-10" />
           </button>
         )}
 
         <img
           src={images[currentIndex].src}
-          alt=""
+          alt={images[currentIndex].alt || ''}
           className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg select-none"
           draggable={false}
         />
 
         {currentIndex < images.length - 1 && (
           <button
-            className="absolute -right-14 text-white/70 hover:text-white"
             onClick={() => onNavigate(currentIndex + 1)}
+            className="absolute -right-12 text-white/70 hover:text-white"
           >
-            <ChevronRight size={48} />
+            <ChevronRight className="w-10 h-10" />
           </button>
         )}
       </div>
 
-      {/* 底部缩略图（始终贴底） */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/60 rounded-xl max-w-[90vw] overflow-x-auto">
+      {/* Thumbnails */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl max-w-[90vw] overflow-x-auto">
         {images.map((img, idx) => (
           <button
             key={idx}
@@ -114,7 +113,7 @@ const Lightbox = ({
               e.stopPropagation();
               onNavigate(idx);
             }}
-            className={`w-16 h-16 rounded-lg overflow-hidden transition ${
+            className={`w-16 h-16 rounded-lg overflow-hidden transition-all ${
               idx === currentIndex
                 ? 'ring-2 ring-white scale-110'
                 : 'opacity-50 hover:opacity-100'
@@ -128,36 +127,7 @@ const Lightbox = ({
   );
 };
 
-/* ================= LazyImage ================= */
-
-const LazyImage = ({
-  src,
-  alt,
-  className,
-  onClick,
-}: {
-  src: string;
-  alt: string;
-  className?: string;
-  onClick?: () => void;
-}) => (
-  <div
-    onClick={onClick}
-    className={`relative cursor-pointer overflow-hidden group ${className}`}
-  >
-    <img
-      src={src}
-      alt={alt}
-      className="w-full h-auto object-contain transition-transform duration-300 group-hover:scale-105"
-      loading="lazy"
-    />
-    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 flex items-center justify-center">
-      <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100" />
-    </div>
-  </div>
-);
-
-/* ================= ProjectDetail ================= */
+/* ===================== Project Detail ===================== */
 
 const ProjectDetail = ({
   projects,
@@ -169,27 +139,21 @@ const ProjectDetail = ({
   const contentRef = useRef<HTMLDivElement>(null);
 
   const currentProject = projects[currentIndex];
-
-  useEffect(() => {
-    document.body.style.overflow = 'hidden';
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, []);
+  const totalProjects = projects.length;
 
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-hidden">
-      {/* 关闭项目 */}
+      {/* Close */}
       {lightboxIndex === null && (
         <button
           onClick={onClose}
-          className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 hover:bg-destructive/20"
+          className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80"
         >
           <X />
         </button>
       )}
 
-      {/* 主滚动区 */}
+      {/* Content */}
       <div
         ref={contentRef}
         className={`h-full ${
@@ -197,23 +161,45 @@ const ProjectDetail = ({
         }`}
       >
         <div className="container mx-auto px-6 py-24">
-          <h1 className="text-4xl font-bold mb-4">
-            {currentProject.title}
-          </h1>
+          {/* Header */}
+          <div className="flex items-center gap-4 mb-12">
+            <div className="p-4 rounded-2xl bg-gradient-gold">
+              {currentProject.icon}
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold">
+                {currentProject.title}
+              </h1>
+              {currentProject.subtitle && (
+                <p className="text-primary mt-2">
+                  {currentProject.subtitle}
+                </p>
+              )}
+            </div>
+          </div>
 
-          <p className="text-muted-foreground mb-12">
+          {/* Description */}
+          <p className="max-w-3xl mb-8 text-muted-foreground">
             {currentProject.description}
           </p>
 
+          {/* Images */}
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
             {currentProject.images.map((img, idx) => (
-              <LazyImage
+              <div
                 key={idx}
-                src={img.src}
-                alt={img.alt || ''}
-                className="rounded-xl shadow-card"
+                className="relative cursor-pointer"
                 onClick={() => setLightboxIndex(idx)}
-              />
+              >
+                <img
+                  src={img.src}
+                  alt={img.alt || ''}
+                  className="rounded-xl"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/0 hover:bg-black/20 transition">
+                  <ZoomIn className="opacity-0 hover:opacity-100 text-white" />
+                </div>
+              </div>
             ))}
           </div>
         </div>
