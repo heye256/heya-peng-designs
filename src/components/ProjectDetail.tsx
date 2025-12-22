@@ -404,31 +404,27 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         </div>
       </div>
 
-      {/* Navigation Arrows */}
-      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
-        <button
-          onClick={() => goToProject('prev')}
-          disabled={currentIndex === 0}
-          className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
-            currentIndex === 0 
-              ? 'opacity-30 cursor-not-allowed' 
-              : 'hover:bg-primary/20 text-foreground hover:text-primary'
-          }`}
-        >
-          <ChevronUp className="w-6 h-6" />
-        </button>
-        <button
-          onClick={() => goToProject('next')}
-          disabled={currentIndex === totalProjects - 1}
-          className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
-            currentIndex === totalProjects - 1 
-              ? 'opacity-30 cursor-not-allowed' 
-              : 'hover:bg-primary/20 text-foreground hover:text-primary'
-          }`}
-        >
-          <ChevronDown className="w-6 h-6" />
-        </button>
-      </div>
+  {/* Navigation Arrows（仅在未放大图片时显示） */}
+{lightboxIndex === null && (
+  <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+    <button
+      onClick={() => goToProject('prev')}
+      disabled={currentIndex === 0}
+      className={...}
+    >
+      <ChevronUp />
+    </button>
+
+    <button
+      onClick={() => goToProject('next')}
+      disabled={currentIndex === totalProjects - 1}
+      className={...}
+    >
+      <ChevronDown />
+    </button>
+  </div>
+)}
+
 
       {/* Progress Dots */}
       <div className="fixed left-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
