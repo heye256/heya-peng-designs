@@ -89,9 +89,11 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   const [currentIndex, setCurrentIndex] = useState(initialProjectIndex);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const touchStartY = useRef(0);
+  const edgeScrollCount = useRef(0);
+  const lastEdgeTime = useRef(0);
 
   const currentProject = projects[currentIndex];
   const totalProjects = projects.length;
@@ -100,18 +102,27 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
     if (isTransitioning) return;
     
     const now = Date.now();
-    if (now - lastScrollTime.current < 800) return;
+    if (now - lastScrollTime.current < 600) return;
     lastScrollTime.current = now;
+
+    if (direction === 'next' && currentIndex >= totalProjects - 1) return;
+    if (direction === 'prev' && currentIndex <= 0) return;
 
     setIsTransitioning(true);
     setScrollDirection(direction === 'next' ? 'down' : 'up');
 
     setTimeout(() => {
-      if (direction === 'next' && currentIndex < totalProjects - 1) {
+      if (direction === 'next') {
         setCurrentIndex(currentIndex + 1);
-      } else if (direction === 'prev' && currentIndex > 0) {
+      } else {
         setCurrentIndex(currentIndex - 1);
       }
+      
+      // Reset scroll position for new project
+      if (contentRef.current) {
+        contentRef.current.scrollTop = 0;
+      }
+      edgeScrollCount.current = 0;
       
       setTimeout(() => {
         setIsTransitioning(false);
@@ -120,29 +131,80 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
     }, 300);
   }, [currentIndex, totalProjects, isTransitioning]);
 
-  // Wheel scroll handler
+  // Check if at scroll boundaries
+  const checkScrollBoundary = useCallback(() => {
+    const content = contentRef.current;
+    if (!content) return { atTop: true, atBottom: true };
+    
+    const atTop = content.scrollTop <= 5;
+    const atBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 5;
+    
+    return { atTop, atBottom };
+  }, []);
+
+  // Wheel scroll handler - scroll content first, then switch projects
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
-      e.preventDefault();
-      
-      if (e.deltaY > 30) {
-        goToProject('next');
-      } else if (e.deltaY < -30) {
-        goToProject('prev');
+      const content = contentRef.current;
+      if (!content || isTransitioning) return;
+
+      const { atTop, atBottom } = checkScrollBoundary();
+      const now = Date.now();
+
+      // Scrolling down at bottom = next project
+      if (e.deltaY > 20 && atBottom && currentIndex < totalProjects - 1) {
+        e.preventDefault();
+        
+        // Need multiple edge scrolls to trigger project switch
+        if (now - lastEdgeTime.current < 500) {
+          edgeScrollCount.current += 1;
+        } else {
+          edgeScrollCount.current = 1;
+        }
+        lastEdgeTime.current = now;
+
+        if (edgeScrollCount.current >= 2) {
+          goToProject('next');
+          edgeScrollCount.current = 0;
+        }
+        return;
+      }
+
+      // Scrolling up at top = previous project
+      if (e.deltaY < -20 && atTop && currentIndex > 0) {
+        e.preventDefault();
+        
+        if (now - lastEdgeTime.current < 500) {
+          edgeScrollCount.current += 1;
+        } else {
+          edgeScrollCount.current = 1;
+        }
+        lastEdgeTime.current = now;
+
+        if (edgeScrollCount.current >= 2) {
+          goToProject('prev');
+          edgeScrollCount.current = 0;
+        }
+        return;
+      }
+
+      // Reset edge count if not at boundary
+      if (!atTop && !atBottom) {
+        edgeScrollCount.current = 0;
       }
     };
 
-    const container = containerRef.current;
-    if (container) {
-      container.addEventListener('wheel', handleWheel, { passive: false });
+    const content = contentRef.current;
+    if (content) {
+      content.addEventListener('wheel', handleWheel, { passive: false });
     }
 
     return () => {
-      if (container) {
-        container.removeEventListener('wheel', handleWheel);
+      if (content) {
+        content.removeEventListener('wheel', handleWheel);
       }
     };
-  }, [goToProject]);
+  }, [goToProject, checkScrollBoundary, isTransitioning, currentIndex, totalProjects]);
 
   // Touch handlers for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -152,11 +214,12 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
     const diff = touchStartY.current - touchEndY;
+    const { atTop, atBottom } = checkScrollBoundary();
 
-    if (Math.abs(diff) > 50) {
-      if (diff > 0) {
+    if (Math.abs(diff) > 80) {
+      if (diff > 0 && atBottom) {
         goToProject('next');
-      } else {
+      } else if (diff < 0 && atTop) {
         goToProject('prev');
       }
     }
@@ -165,18 +228,28 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === 'j') {
-        goToProject('next');
-      } else if (e.key === 'ArrowUp' || e.key === 'k') {
-        goToProject('prev');
-      } else if (e.key === 'Escape') {
+      if (e.key === 'Escape') {
         onClose();
+      }
+      // Page Down / End to go to next project when at bottom
+      if (e.key === 'End' || e.key === 'PageDown') {
+        const { atBottom } = checkScrollBoundary();
+        if (atBottom) {
+          goToProject('next');
+        }
+      }
+      // Page Up / Home to go to prev project when at top
+      if (e.key === 'Home' || e.key === 'PageUp') {
+        const { atTop } = checkScrollBoundary();
+        if (atTop) {
+          goToProject('prev');
+        }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [goToProject, onClose]);
+  }, [goToProject, onClose, checkScrollBoundary]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -194,12 +267,7 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   };
 
   return (
-    <div 
-      ref={containerRef}
-      className="fixed inset-0 z-50 bg-background overflow-hidden"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-    >
+    <div className="fixed inset-0 z-50 bg-background overflow-hidden">
       {/* Close Button */}
       <button
         onClick={onClose}
@@ -253,6 +321,9 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
                 setScrollDirection(index > currentIndex ? 'down' : 'up');
                 setTimeout(() => {
                   setCurrentIndex(index);
+                  if (contentRef.current) {
+                    contentRef.current.scrollTop = 0;
+                  }
                   setTimeout(() => {
                     setIsTransitioning(false);
                     setScrollDirection(null);
@@ -269,9 +340,12 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         ))}
       </div>
 
-      {/* Main Content */}
+      {/* Main Scrollable Content */}
       <div 
-        className={`h-full overflow-y-auto transition-all duration-300 ease-out ${getTransitionClass()}`}
+        ref={contentRef}
+        className={`h-full overflow-y-auto scroll-smooth transition-all duration-300 ease-out ${getTransitionClass()}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
       >
         <div className="container mx-auto px-6 py-24">
           {/* Project Header */}
@@ -322,11 +396,11 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
           </div>
 
           {/* Scroll Hint */}
-          <div className="mt-16 text-center">
+          <div className="mt-16 pb-8 text-center">
             {currentIndex < totalProjects - 1 ? (
-              <div className="flex flex-col items-center gap-2 text-muted-foreground animate-bounce">
-                <span className="text-sm">向下滚动查看下一个项目</span>
-                <ChevronDown className="w-6 h-6" />
+              <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                <span className="text-sm">滚动到底部后继续向下滚动查看下一个项目</span>
+                <ChevronDown className="w-6 h-6 animate-bounce" />
               </div>
             ) : (
               <div className="text-muted-foreground">
