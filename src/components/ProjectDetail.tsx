@@ -1,6 +1,5 @@
 
 
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
@@ -387,15 +386,12 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-hidden">
       {/* Close Button */}
-     {/* Close Button（仅在未放大图片时显示） */}
-{lightboxIndex === null && (
-  <button
-    onClick={onClose}
-    className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
-  >
-    <X className="w-6 h-6" />
-  </button>
-)}
+      <button
+        onClick={onClose}
+        className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
+      >
+        <X className="w-6 h-6" />
+      </button>
 
       {/* Progress Indicator */}
       <div className="fixed top-6 left-6 z-50 flex items-center gap-4">
@@ -405,27 +401,31 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         </div>
       </div>
 
-  {/* Navigation Arrows（仅在未放大图片时显示） */}
-{lightboxIndex === null && (
-  <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
-    <button
-      onClick={() => goToProject('prev')}
-      disabled={currentIndex === 0}
-      className={...}
-    >
-      <ChevronUp />
-    </button>
-
-    <button
-      onClick={() => goToProject('next')}
-      disabled={currentIndex === totalProjects - 1}
-      className={...}
-    >
-      <ChevronDown />
-    </button>
-  </div>
-)}
-
+      {/* Navigation Arrows */}
+      <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
+        <button
+          onClick={() => goToProject('prev')}
+          disabled={currentIndex === 0}
+          className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
+            currentIndex === 0 
+              ? 'opacity-30 cursor-not-allowed' 
+              : 'hover:bg-primary/20 text-foreground hover:text-primary'
+          }`}
+        >
+          <ChevronUp className="w-6 h-6" />
+        </button>
+        <button
+          onClick={() => goToProject('next')}
+          disabled={currentIndex === totalProjects - 1}
+          className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
+            currentIndex === totalProjects - 1 
+              ? 'opacity-30 cursor-not-allowed' 
+              : 'hover:bg-primary/20 text-foreground hover:text-primary'
+          }`}
+        >
+          <ChevronDown className="w-6 h-6" />
+        </button>
+      </div>
 
       {/* Progress Dots */}
       <div className="fixed left-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
