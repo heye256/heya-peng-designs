@@ -1,21 +1,14 @@
 import { ChevronDown } from 'lucide-react';
-
 interface HeroSectionProps {
   onBrowseWorks: () => void;
 }
-
-const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
-  return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+const HeroSection = ({
+  onBrowseWorks
+}: HeroSectionProps) => {
+  return <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-full object-cover"
-        >
+        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
           <source src="/videos/hero-bg.mp4" type="video/mp4" />
         </video>
 
@@ -32,13 +25,13 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
               <span className="block text-white text-5xl md:text-6xl lg:text-7xl">
                 你好，我是
               </span>
-              <span className="block text-gradient-gold text-6xl md:text-7xl lg:text-8xl">
+              <span className="block text-gradient-gold text-6xl md:text-7xl lg:text-8xl my-[27px]">
                 何亚鹏
               </span>
             </h1>
 
             {/* 描述文字 */}
-            <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl">
+            <p className="text-white/90 text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify">
               专注
               <span className="text-primary font-medium"> 平面设计 </span>
               与
@@ -49,10 +42,7 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
             </p>
 
             {/* 按钮 */}
-            <button
-              onClick={onBrowseWorks}
-              className="inline-flex items-center gap-3 bg-primary text-black font-bold px-8 py-4 rounded-2xl text-lg hover:opacity-90 transition"
-            >
+            <button onClick={onBrowseWorks} className="inline-flex items-center gap-3 bg-primary text-black font-bold px-8 py-4 rounded-2xl text-lg hover:opacity-90 transition">
               浏览作品
               <ChevronDown className="w-5 h-5" />
             </button>
@@ -64,8 +54,6 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
         <ChevronDown className="w-8 h-8 text-white/60" />
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
