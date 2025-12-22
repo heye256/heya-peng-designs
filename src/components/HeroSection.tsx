@@ -42,12 +42,13 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
           </h1>
           
           <p 
-            className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 animate-slide-up max-w-2xl"
-            style={{ animationDelay: '0.2s' }}
-          >
-            专注<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
-            熟悉 PS、AI、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
-          </p>
+  className="text-lg md:text-xl text-white leading-relaxed mb-8 animate-slide-up max-w-2xl"
+  style={{ animationDelay: '0.2s' }}
+>
+  专注<span className="text-primary font-medium">平面设计</span>与<span className="text-primary font-medium">3D美术</span>。
+  熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。
+</p>
+
 
           <div 
             className="animate-slide-up"
