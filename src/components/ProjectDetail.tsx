@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { X, ChevronUp, ChevronDown } from 'lucide-react';
+import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
 interface ProjectImage {
   src: string;
@@ -22,16 +22,106 @@ interface ProjectDetailProps {
   onClose: () => void;
 }
 
+// Lightbox Component
+const Lightbox = ({
+  images,
+  currentIndex,
+  onClose,
+  onNavigate,
+}: {
+  images: ProjectImage[];
+  currentIndex: number;
+  onClose: () => void;
+  onNavigate: (index: number) => void;
+}) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose();
+      if (e.key === 'ArrowLeft' && currentIndex > 0) onNavigate(currentIndex - 1);
+      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) onNavigate(currentIndex + 1);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, images.length, onClose, onNavigate]);
+
+  return (
+    <div 
+      className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
+      onClick={onClose}
+    >
+      {/* Close Button */}
+      <button
+        onClick={onClose}
+        className="absolute top-4 right-4 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all"
+      >
+        <X className="w-6 h-6" />
+      </button>
+
+      {/* Image Counter */}
+      <div className="absolute top-4 left-4 z-10 px-4 py-2 rounded-full bg-white/10 text-white text-sm">
+        {currentIndex + 1} / {images.length}
+      </div>
+
+      {/* Navigation Arrows */}
+      {currentIndex > 0 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate(currentIndex - 1); }}
+          className="absolute left-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all"
+        >
+          <ChevronLeft className="w-8 h-8" />
+        </button>
+      )}
+      {currentIndex < images.length - 1 && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onNavigate(currentIndex + 1); }}
+          className="absolute right-4 top-1/2 -translate-y-1/2 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-all"
+        >
+          <ChevronRight className="w-8 h-8" />
+        </button>
+      )}
+
+      {/* Main Image */}
+      <div 
+        className="max-w-[90vw] max-h-[90vh] flex items-center justify-center"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <img
+          src={images[currentIndex].src}
+          alt={images[currentIndex].alt || ''}
+          className="max-w-full max-h-[90vh] object-contain animate-scale-in"
+        />
+      </div>
+
+      {/* Thumbnail Strip */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto">
+        {images.map((img, idx) => (
+          <button
+            key={idx}
+            onClick={(e) => { e.stopPropagation(); onNavigate(idx); }}
+            className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 transition-all ${
+              idx === currentIndex ? 'ring-2 ring-white scale-110' : 'opacity-50 hover:opacity-100'
+            }`}
+          >
+            <img src={img.src} alt="" className="w-full h-full object-cover" />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const LazyImage = ({ 
   src, 
   alt, 
   className,
-  priority = false 
+  priority = false,
+  onClick,
 }: { 
   src: string; 
   alt: string; 
   className?: string;
   priority?: boolean;
+  onClick?: () => void;
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
@@ -63,7 +153,8 @@ const LazyImage = ({
   return (
     <div 
       ref={imgRef} 
-      className={`relative overflow-hidden ${className}`}
+      className={`relative overflow-hidden group cursor-pointer ${className}`}
+      onClick={onClick}
     >
       {/* Placeholder skeleton */}
       {!isLoaded && (
@@ -71,15 +162,21 @@ const LazyImage = ({
       )}
       
       {isInView && (
-        <img
-          src={src}
-          alt={alt}
-          className={`w-full h-auto object-contain transition-opacity duration-500 ${
-            isLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
-          onLoad={() => setIsLoaded(true)}
-          loading={priority ? 'eager' : 'lazy'}
-        />
+        <>
+          <img
+            src={src}
+            alt={alt}
+            className={`w-full h-auto object-contain transition-all duration-500 group-hover:scale-105 ${
+              isLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
+            onLoad={() => setIsLoaded(true)}
+            loading={priority ? 'eager' : 'lazy'}
+          />
+          {/* Zoom overlay */}
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+            <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+        </>
       )}
     </div>
   );
@@ -89,6 +186,7 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   const [currentIndex, setCurrentIndex] = useState(initialProjectIndex);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [scrollDirection, setScrollDirection] = useState<'up' | 'down' | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const lastScrollTime = useRef(0);
   const touchStartY = useRef(0);
@@ -391,9 +489,20 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
                 alt={image.alt || `${currentProject.title} - Image ${index + 1}`}
                 className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300"
                 priority={index < 3}
+                onClick={() => setLightboxIndex(index)}
               />
             ))}
           </div>
+
+          {/* Lightbox */}
+          {lightboxIndex !== null && (
+            <Lightbox
+              images={currentProject.images}
+              currentIndex={lightboxIndex}
+              onClose={() => setLightboxIndex(null)}
+              onNavigate={setLightboxIndex}
+            />
+          )}
 
           {/* Scroll Hint */}
           <div className="mt-16 pb-8 text-center">
