@@ -478,6 +478,16 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
               <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">
                 {currentProject.icon}
               </div>
+              {/* Lightbox */}
+{lightboxIndex !== null && (
+  <Lightbox
+    images={currentProject.images}
+    currentIndex={lightboxIndex}
+    onClose={() => setLightboxIndex(null)}
+    onNavigate={setLightboxIndex}
+  />
+)}
+
               <div>
                 <h1 className="text-4xl md:text-5xl font-bold text-foreground">
                   {currentProject.title}
