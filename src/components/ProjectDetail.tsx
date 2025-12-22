@@ -1,6 +1,5 @@
-// ProjectDetail.tsx
-import { useState } from 'react';
-import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProjectDetailProps {
   projects: {
@@ -16,45 +15,60 @@ interface ProjectDetailProps {
   onClose: () => void;
 }
 
-const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetailProps) => {
+const ProjectDetail = ({
+  projects,
+  initialProjectIndex,
+  onClose,
+}: ProjectDetailProps) => {
   const [currentIndex] = useState(initialProjectIndex);
-  const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+  const [zoomIndex, setZoomIndex] = useState<number | null>(null);
 
   const project = projects[currentIndex];
 
-  const handleImageClick = (src: string) => {
-    setZoomedImage(src);
+  /** 放大时禁止页面滚动 */
+  useEffect(() => {
+    if (zoomIndex !== null) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [zoomIndex]);
+
+  const showPrev = () => {
+    if (zoomIndex === null) return;
+    setZoomIndex(
+      zoomIndex === 0 ? project.images.length - 1 : zoomIndex - 1
+    );
   };
 
-  const handleZoomOverlayClick = (e: React.MouseEvent) => {
-    if ((e.target as HTMLElement).id === 'zoom-overlay') {
-      setZoomedImage(null);
-    }
+  const showNext = () => {
+    if (zoomIndex === null) return;
+    setZoomIndex(
+      zoomIndex === project.images.length - 1 ? 0 : zoomIndex + 1
+    );
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="relative max-w-6xl w-full mx-4 bg-background rounded-xl overflow-hidden shadow-xl">
-        {/* Close Button */}
-        <button
-          className="absolute top-4 right-4 text-white p-2 rounded-full bg-black/40 hover:bg-black/60"
-          onClick={onClose}
-        >
-          <X className="w-6 h-6" />
-        </button>
-
-        {/* Content */}
+    <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex justify-center items-center">
+      {/* 主内容 */}
+      <div className="relative max-w-6xl w-full mx-4 bg-background rounded-xl overflow-hidden">
         <div className="flex flex-col md:flex-row">
-          {/* Left Side: Project Info */}
-          <div className="md:w-1/3 p-6 flex flex-col gap-4">
+          {/* 左侧信息 */}
+          <div className="md:w-1/3 p-6 space-y-4">
             <h2 className="text-3xl font-bold">{project.title}</h2>
-            {project.subtitle && <p className="text-primary">{project.subtitle}</p>}
+            {project.subtitle && (
+              <p className="text-primary">{project.subtitle}</p>
+            )}
             <p className="text-muted-foreground">{project.description}</p>
-            <div className="flex flex-wrap gap-2 mt-4">
-              {project.tools.map((tool, idx) => (
+
+            <div className="flex flex-wrap gap-2">
+              {project.tools.map((tool, i) => (
                 <span
-                  key={idx}
-                  className="px-3 py-1 rounded-full bg-card/50 backdrop-blur-sm text-xs text-muted-foreground border border-border/50"
+                  key={i}
+                  className="px-3 py-1 rounded-full text-xs bg-card border"
                 >
                   {tool}
                 </span>
@@ -62,33 +76,55 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
             </div>
           </div>
 
-          {/* Right Side: Images */}
+          {/* 右侧图片 */}
           <div className="md:w-2/3 p-6 grid grid-cols-2 md:grid-cols-3 gap-4">
             {project.images.map((img, idx) => (
               <img
                 key={idx}
                 src={img.src}
-                alt={img.alt || project.title}
-                className="cursor-pointer rounded-lg object-cover hover:scale-105 transition-transform duration-300"
-                onClick={() => handleImageClick(img.src)}
+                alt={img.alt || ''}
+                className="cursor-pointer rounded-lg object-cover hover:scale-105 transition"
+                onClick={() => setZoomIndex(idx)}
               />
             ))}
           </div>
         </div>
       </div>
 
-      {/* Zoomed Image Overlay */}
-      {zoomedImage && (
+      {/* 放大查看层 */}
+      {zoomIndex !== null && (
         <div
-          id="zoom-overlay"
-          className="fixed inset-0 flex items-center justify-center bg-black/80 z-50 cursor-pointer"
-          onClick={handleZoomOverlayClick}
+          className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center"
+          onClick={() => setZoomIndex(null)}
         >
-          <img
-            src={zoomedImage}
-            alt="Zoomed"
-            className="max-h-[90%] max-w-[90%] object-contain rounded-lg shadow-xl"
-          />
+          {/* 阻止点到图片时关闭 */}
+          <div
+            className="relative flex items-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* 左按钮（贴近图片） */}
+            <button
+              onClick={showPrev}
+              className="absolute -left-14 text-white/80 hover:text-white transition"
+            >
+              <ChevronLeft size={48} />
+            </button>
+
+            {/* 图片 */}
+            <img
+              src={project.images[zoomIndex].src}
+              alt=""
+              className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg"
+            />
+
+            {/* 右按钮（贴近图片） */}
+            <button
+              onClick={showNext}
+              className="absolute -right-14 text-white/80 hover:text-white transition"
+            >
+              <ChevronRight size={48} />
+            </button>
+          </div>
         </div>
       )}
     </div>
