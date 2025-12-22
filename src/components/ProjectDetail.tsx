@@ -1,6 +1,3 @@
-
-
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 
@@ -26,7 +23,6 @@ interface ProjectDetailProps {
 }
 
 // Lightbox Component
-// Lightbox Component（仅此处修改）
 const Lightbox = ({
   images,
   currentIndex,
@@ -38,22 +34,16 @@ const Lightbox = ({
   onClose: () => void;
   onNavigate: (index: number) => void;
 }) => {
-  // 锁定页面滚动
   useEffect(() => {
     document.body.style.overflow = 'hidden';
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
-      if (e.key === 'ArrowLeft' && currentIndex > 0) {
-        onNavigate(currentIndex - 1);
-      }
-      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) {
-        onNavigate(currentIndex + 1);
-      }
+      if (e.key === 'ArrowLeft' && currentIndex > 0) onNavigate(currentIndex - 1);
+      if (e.key === 'ArrowRight' && currentIndex < images.length - 1) onNavigate(currentIndex + 1);
     };
 
     window.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.body.style.overflow = '';
       window.removeEventListener('keydown', handleKeyDown);
@@ -62,22 +52,19 @@ const Lightbox = ({
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/95 flex items-center justify-center"
+      className="fixed inset-0 z-[60] bg-black/95 flex flex-col items-center justify-center"
       onClick={onClose}
-      onWheel={(e) => e.preventDefault()}
     >
-      {/* 图片计数（保留） */}
+      {/* 图片计数 */}
       <div className="absolute top-4 left-4 z-10 px-4 py-2 rounded-full bg-white/10 text-white text-sm">
         {currentIndex + 1} / {images.length}
       </div>
 
       {/* 图片容器 */}
       <div
-        className="relative flex items-center justify-center max-w-[90vw] max-h-[90vh]"
+        className="relative flex items-center justify-center max-w-[90vw] max-h-[80vh]"
         onClick={(e) => e.stopPropagation()}
-        onWheel={(e) => e.preventDefault()}
       >
-        {/* 左切换按钮（贴近图片） */}
         {currentIndex > 0 && (
           <button
             onClick={() => onNavigate(currentIndex - 1)}
@@ -87,15 +74,13 @@ const Lightbox = ({
           </button>
         )}
 
-        {/* 图片 */}
         <img
           src={images[currentIndex].src}
           alt={images[currentIndex].alt || ''}
-          className="max-w-[90vw] max-h-[90vh] object-contain rounded-lg select-none"
+          className="max-w-[90vw] max-h-[80vh] object-contain rounded-lg select-none"
           draggable={false}
         />
 
-        {/* 右切换按钮（贴近图片） */}
         {currentIndex < images.length - 1 && (
           <button
             onClick={() => onNavigate(currentIndex + 1)}
@@ -106,8 +91,8 @@ const Lightbox = ({
         )}
       </div>
 
-      {/* 缩略图条（完全保留） */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto">
+      {/* 缩略图 */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto z-20">
         {images.map((img, idx) => (
           <button
             key={idx}
@@ -116,9 +101,7 @@ const Lightbox = ({
               onNavigate(idx);
             }}
             className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 transition-all ${
-              idx === currentIndex
-                ? 'ring-2 ring-white scale-110'
-                : 'opacity-50 hover:opacity-100'
+              idx === currentIndex ? 'ring-2 ring-white scale-110' : 'opacity-50 hover:opacity-100'
             }`}
           >
             <img src={img.src} alt="" className="w-full h-full object-cover" />
@@ -129,16 +112,16 @@ const Lightbox = ({
   );
 };
 
-
-const LazyImage = ({ 
-  src, 
-  alt, 
+// LazyImage Component
+const LazyImage = ({
+  src,
+  alt,
   className,
   priority = false,
   onClick,
-}: { 
-  src: string; 
-  alt: string; 
+}: {
+  src: string;
+  alt: string;
   className?: string;
   priority?: boolean;
   onClick?: () => void;
@@ -152,7 +135,6 @@ const LazyImage = ({
       setIsInView(true);
       return;
     }
-
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -162,25 +144,18 @@ const LazyImage = ({
       },
       { rootMargin: '200px' }
     );
-
-    if (imgRef.current) {
-      observer.observe(imgRef.current);
-    }
-
+    if (imgRef.current) observer.observe(imgRef.current);
     return () => observer.disconnect();
   }, [priority]);
 
   return (
-    <div 
-      ref={imgRef} 
+    <div
+      ref={imgRef}
       className={`relative overflow-hidden group cursor-pointer ${className}`}
       onClick={onClick}
     >
-      {/* Placeholder skeleton */}
-      {!isLoaded && (
-        <div className="absolute inset-0 bg-card animate-pulse" />
-      )}
-      
+      {!isLoaded && <div className="absolute inset-0 bg-card animate-pulse" />}
+
       {isInView && (
         <>
           <img
@@ -192,7 +167,6 @@ const LazyImage = ({
             onLoad={() => setIsLoaded(true)}
             loading={priority ? 'eager' : 'lazy'}
           />
-          {/* Zoom overlay */}
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
             <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
@@ -216,71 +190,51 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
   const currentProject = projects[currentIndex];
   const totalProjects = projects.length;
 
-  const goToProject = useCallback((direction: 'prev' | 'next') => {
-    if (isTransitioning) return;
-    
-    const now = Date.now();
-    if (now - lastScrollTime.current < 600) return;
-    lastScrollTime.current = now;
+  const goToProject = useCallback(
+    (direction: 'prev' | 'next') => {
+      if (isTransitioning) return;
+      const now = Date.now();
+      if (now - lastScrollTime.current < 600) return;
+      lastScrollTime.current = now;
+      if (direction === 'next' && currentIndex >= totalProjects - 1) return;
+      if (direction === 'prev' && currentIndex <= 0) return;
 
-    if (direction === 'next' && currentIndex >= totalProjects - 1) return;
-    if (direction === 'prev' && currentIndex <= 0) return;
+      setIsTransitioning(true);
+      setScrollDirection(direction === 'next' ? 'down' : 'up');
 
-    setIsTransitioning(true);
-    setScrollDirection(direction === 'next' ? 'down' : 'up');
-
-    setTimeout(() => {
-      if (direction === 'next') {
-        setCurrentIndex(currentIndex + 1);
-      } else {
-        setCurrentIndex(currentIndex - 1);
-      }
-      
-      // Reset scroll position for new project
-      if (contentRef.current) {
-        contentRef.current.scrollTop = 0;
-      }
-      edgeScrollCount.current = 0;
-      
       setTimeout(() => {
-        setIsTransitioning(false);
-        setScrollDirection(null);
-      }, 100);
-    }, 300);
-  }, [currentIndex, totalProjects, isTransitioning]);
+        setCurrentIndex(direction === 'next' ? currentIndex + 1 : currentIndex - 1);
+        if (contentRef.current) contentRef.current.scrollTop = 0;
+        edgeScrollCount.current = 0;
 
-  // Check if at scroll boundaries
+        setTimeout(() => {
+          setIsTransitioning(false);
+          setScrollDirection(null);
+        }, 100);
+      }, 300);
+    },
+    [currentIndex, totalProjects, isTransitioning]
+  );
+
   const checkScrollBoundary = useCallback(() => {
     const content = contentRef.current;
     if (!content) return { atTop: true, atBottom: true };
-    
     const atTop = content.scrollTop <= 5;
     const atBottom = content.scrollTop + content.clientHeight >= content.scrollHeight - 5;
-    
     return { atTop, atBottom };
   }, []);
 
-  // Wheel scroll handler - scroll content first, then switch projects
   useEffect(() => {
     const handleWheel = (e: WheelEvent) => {
       const content = contentRef.current;
       if (!content || isTransitioning) return;
-
       const { atTop, atBottom } = checkScrollBoundary();
       const now = Date.now();
 
-      // Scrolling down at bottom = next project
       if (e.deltaY > 20 && atBottom && currentIndex < totalProjects - 1) {
         e.preventDefault();
-        
-        // Need multiple edge scrolls to trigger project switch
-        if (now - lastEdgeTime.current < 500) {
-          edgeScrollCount.current += 1;
-        } else {
-          edgeScrollCount.current = 1;
-        }
+        edgeScrollCount.current = now - lastEdgeTime.current < 500 ? edgeScrollCount.current + 1 : 1;
         lastEdgeTime.current = now;
-
         if (edgeScrollCount.current >= 2) {
           goToProject('next');
           edgeScrollCount.current = 0;
@@ -288,17 +242,10 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         return;
       }
 
-      // Scrolling up at top = previous project
       if (e.deltaY < -20 && atTop && currentIndex > 0) {
         e.preventDefault();
-        
-        if (now - lastEdgeTime.current < 500) {
-          edgeScrollCount.current += 1;
-        } else {
-          edgeScrollCount.current = 1;
-        }
+        edgeScrollCount.current = now - lastEdgeTime.current < 500 ? edgeScrollCount.current + 1 : 1;
         lastEdgeTime.current = now;
-
         if (edgeScrollCount.current >= 2) {
           goToProject('prev');
           edgeScrollCount.current = 0;
@@ -306,70 +253,39 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         return;
       }
 
-      // Reset edge count if not at boundary
-      if (!atTop && !atBottom) {
-        edgeScrollCount.current = 0;
-      }
+      if (!atTop && !atBottom) edgeScrollCount.current = 0;
     };
 
     const content = contentRef.current;
-    if (content) {
-      content.addEventListener('wheel', handleWheel, { passive: false });
-    }
-
+    if (content) content.addEventListener('wheel', handleWheel, { passive: false });
     return () => {
-      if (content) {
-        content.removeEventListener('wheel', handleWheel);
-      }
+      if (content) content.removeEventListener('wheel', handleWheel);
     };
   }, [goToProject, checkScrollBoundary, isTransitioning, currentIndex, totalProjects]);
 
-  // Touch handlers for mobile
   const handleTouchStart = (e: React.TouchEvent) => {
     touchStartY.current = e.touches[0].clientY;
   };
-
   const handleTouchEnd = (e: React.TouchEvent) => {
     const touchEndY = e.changedTouches[0].clientY;
     const diff = touchStartY.current - touchEndY;
     const { atTop, atBottom } = checkScrollBoundary();
-
     if (Math.abs(diff) > 80) {
-      if (diff > 0 && atBottom) {
-        goToProject('next');
-      } else if (diff < 0 && atTop) {
-        goToProject('prev');
-      }
+      if (diff > 0 && atBottom) goToProject('next');
+      else if (diff < 0 && atTop) goToProject('prev');
     }
   };
 
-  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      }
-      // Page Down / End to go to next project when at bottom
-      if (e.key === 'End' || e.key === 'PageDown') {
-        const { atBottom } = checkScrollBoundary();
-        if (atBottom) {
-          goToProject('next');
-        }
-      }
-      // Page Up / Home to go to prev project when at top
-      if (e.key === 'Home' || e.key === 'PageUp') {
-        const { atTop } = checkScrollBoundary();
-        if (atTop) {
-          goToProject('prev');
-        }
-      }
+      if (e.key === 'Escape') onClose();
+      if ((e.key === 'End' || e.key === 'PageDown') && checkScrollBoundary().atBottom) goToProject('next');
+      if ((e.key === 'Home' || e.key === 'PageUp') && checkScrollBoundary().atTop) goToProject('prev');
     };
-
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [goToProject, onClose, checkScrollBoundary]);
 
-  // Lock body scroll when modal is open
   useEffect(() => {
     document.body.style.overflow = 'hidden';
     return () => {
@@ -386,17 +302,15 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
 
   return (
     <div className="fixed inset-0 z-50 bg-background overflow-hidden">
-    {/* Close Button（仅在未放大图片时显示） */}
-{lightboxIndex === null && (
-  <button
-    onClick={onClose}
-    className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
-  >
-    <X className="w-6 h-6" />
-  </button>
-)}
+      {lightboxIndex === null && (
+        <button
+          onClick={onClose}
+          className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
+        >
+          <X className="w-6 h-6" />
+        </button>
+      )}
 
-      {/* Progress Indicator */}
       <div className="fixed top-6 left-6 z-50 flex items-center gap-4">
         <div className="px-4 py-2 rounded-full bg-card/80 backdrop-blur-sm">
           <span className="text-primary font-semibold">{currentIndex + 1}</span>
@@ -404,15 +318,12 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         </div>
       </div>
 
-      {/* Navigation Arrows */}
       <div className="fixed right-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
         <button
           onClick={() => goToProject('prev')}
           disabled={currentIndex === 0}
           className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
-            currentIndex === 0 
-              ? 'opacity-30 cursor-not-allowed' 
-              : 'hover:bg-primary/20 text-foreground hover:text-primary'
+            currentIndex === 0 ? 'opacity-30 cursor-not-allowed' : 'hover:bg-primary/20 text-foreground hover:text-primary'
           }`}
         >
           <ChevronUp className="w-6 h-6" />
@@ -421,8 +332,8 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
           onClick={() => goToProject('next')}
           disabled={currentIndex === totalProjects - 1}
           className={`p-3 rounded-full bg-card/80 backdrop-blur-sm transition-all ${
-            currentIndex === totalProjects - 1 
-              ? 'opacity-30 cursor-not-allowed' 
+            currentIndex === totalProjects - 1
+              ? 'opacity-30 cursor-not-allowed'
               : 'hover:bg-primary/20 text-foreground hover:text-primary'
           }`}
         >
@@ -430,7 +341,6 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
         </button>
       </div>
 
-      {/* Progress Dots */}
       <div className="fixed left-6 top-1/2 -translate-y-1/2 z-50 flex flex-col gap-2">
         {projects.map((_, index) => (
           <button
@@ -441,9 +351,7 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
                 setScrollDirection(index > currentIndex ? 'down' : 'up');
                 setTimeout(() => {
                   setCurrentIndex(index);
-                  if (contentRef.current) {
-                    contentRef.current.scrollTop = 0;
-                  }
+                  if (contentRef.current) contentRef.current.scrollTop = 0;
                   setTimeout(() => {
                     setIsTransitioning(false);
                     setScrollDirection(null);
@@ -452,71 +360,51 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
               }
             }}
             className={`w-3 h-3 rounded-full transition-all ${
-              index === currentIndex 
-                ? 'bg-primary scale-125' 
-                : 'bg-muted hover:bg-primary/50'
+              index === currentIndex ? 'bg-primary scale-125' : 'bg-muted hover:bg-primary/50'
             }`}
           />
         ))}
       </div>
 
-      {/* Main Scrollable Content */}
-      <div 
-  ref={contentRef}
-  className={`h-full transition-all duration-300 ease-out
-    ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}
-    ${getTransitionClass()}
-  `}
-  onTouchStart={handleTouchStart}
-  onTouchEnd={handleTouchEnd}
->
-
+      <div
+        ref={contentRef}
+        className={`h-full transition-all duration-300 ease-out ${
+          lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'
+        } ${getTransitionClass()}`}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
         <div className="container mx-auto px-6 py-24">
-          {/* Project Header */}
           <div className="mb-12">
-            <div className="flex items-center gap-4 mb-6">
+            {/* 左上角标题 + 工具 + 描述 */}
+            <div className="flex items-center gap-4 mb-4">
               <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">
                 {currentProject.icon}
               </div>
-              {/* Lightbox */}
-{lightboxIndex !== null && (
-  <Lightbox
-    images={currentProject.images}
-    currentIndex={lightboxIndex}
-    onClose={() => setLightboxIndex(null)}
-    onNavigate={setLightboxIndex}
-  />
-)}
-
               <div>
-                <h1 className="text-4xl md:text-5xl font-bold text-foreground">
-                  {currentProject.title}
-                </h1>
+                <h1 className="text-4xl md:text-5xl font-bold text-foreground">{currentProject.title}</h1>
                 {currentProject.subtitle && (
                   <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>
                 )}
               </div>
             </div>
 
-            {/* Project Description */}
-            <p className="text-muted-foreground text-lg max-w-3xl mb-6">
-              {currentProject.description}
-            </p>
-
-            {/* Tools Tags */}
-            <div className="flex flex-wrap gap-2">
+            {/* 工具列表在标题下面 */}
+            <div className="flex flex-wrap gap-2 mb-6">
               {currentProject.tools.map((tool, index) => (
                 <span
                   key={index}
-                  className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+                  className="px-3 py-1 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
                 >
                   {tool}
                 </span>
               ))}
             </div>
+
+            <p className="text-muted-foreground text-lg max-w-3xl">{currentProject.description}</p>
           </div>
 
-          {/* Masonry Image Grid - Adaptive Layout */}
+          {/* 项目图片 */}
           <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
             {currentProject.images.map((image, index) => (
               <LazyImage
@@ -530,17 +418,7 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
             ))}
           </div>
 
-          {/* Lightbox */}
-          {lightboxIndex !== null && (
-            <Lightbox
-              images={currentProject.images}
-              currentIndex={lightboxIndex}
-              onClose={() => setLightboxIndex(null)}
-              onNavigate={setLightboxIndex}
-            />
-          )}
-
-          {/* Scroll Hint */}
+          {/* 底部提示 */}
           <div className="mt-16 pb-8 text-center">
             {currentIndex < totalProjects - 1 ? (
               <div className="flex flex-col items-center gap-2 text-muted-foreground">
@@ -553,6 +431,16 @@ const ProjectDetail = ({ projects, initialProjectIndex, onClose }: ProjectDetail
               </div>
             )}
           </div>
+
+          {/* Lightbox */}
+          {lightboxIndex !== null && (
+            <Lightbox
+              images={currentProject.images}
+              currentIndex={lightboxIndex}
+              onClose={() => setLightboxIndex(null)}
+              onNavigate={setLightboxIndex}
+            />
+          )}
         </div>
       </div>
     </div>
