@@ -2,6 +2,12 @@ import { useState } from 'react';
 import { Layers, Palette, Box, PenTool } from 'lucide-react';
 import ProjectDetail from './ProjectDetail';
 
+interface SubCategory {
+  id: string;
+  title: string;
+  images: { src: string; alt?: string }[];
+}
+
 interface Category {
   id: string;
   title: string;
@@ -10,6 +16,7 @@ interface Category {
   images: { src: string; alt?: string }[];
   description: string;
   tools: string[];
+  subCategories?: SubCategory[];
 }
 
 const categories: Category[] = [
@@ -64,9 +71,40 @@ const categories: Category[] = [
     tools: ['Blender', 'Cinema 4D', 'Substance Painter', 'ZBrush', 'Unreal Engine'],
     images: [
       { src: '/image/works/3d.png', alt: '3D角色建模' },
-      { src: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80', alt: '3D渲染' },
-      { src: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80', alt: '材质贴图' },
-      { src: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80', alt: '三维动画' },
+    ],
+    subCategories: [
+      {
+        id: 'modeling',
+        title: '建模作品',
+        images: [
+          { src: '/image/works/3d.png', alt: '3D建模作品' },
+          { src: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80', alt: '角色建模' },
+        ],
+      },
+      {
+        id: 'texturing',
+        title: '材质贴图',
+        images: [
+          { src: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80', alt: '材质贴图' },
+          { src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80', alt: 'PBR材质' },
+        ],
+      },
+      {
+        id: 'lighting',
+        title: '灯光渲染',
+        images: [
+          { src: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&q=80', alt: '灯光渲染' },
+          { src: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&q=80', alt: '场景渲染' },
+        ],
+      },
+      {
+        id: 'animation',
+        title: '三维动画',
+        images: [
+          { src: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&q=80', alt: '三维动画' },
+          { src: 'https://images.unsplash.com/photo-1551269901-5c5e14c25df7?w=800&q=80', alt: '动态效果' },
+        ],
+      },
     ],
   },
   {
