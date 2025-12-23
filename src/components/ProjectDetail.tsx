@@ -4,13 +4,11 @@ interface ProjectImage {
   src: string;
   alt?: string;
 }
-
 interface SubCategory {
   id: string;
   title: string;
   images: ProjectImage[];
 }
-
 interface Project {
   id: string;
   title: string;
@@ -154,112 +152,61 @@ const ProjectDetail = ({
     }
     return currentProject.images;
   }, [currentProject, activeSubCategory]);
-
   const displayImages = getCurrentImages();
 
   // 切换项目时重置子分类
   useEffect(() => {
     setActiveSubCategory(null);
   }, [currentIndex]);
-
-  return (
-    <div className="fixed inset-0 z-50 bg-background overflow-hidden">
+  return <div className="fixed inset-0 z-50 bg-background overflow-hidden">
       {/* Close Button */}
-      {lightboxIndex === null && (
-        <button
-          onClick={onClose}
-          className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
-        >
+      {lightboxIndex === null && <button onClick={onClose} className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all">
           <X className="w-6 h-6" />
-        </button>
-      )}
+        </button>}
 
       {/* Scrollable Content */}
       <div ref={contentRef} className={`h-full ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}`}>
         <div className="container mx-auto px-6 py-24">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-6">
+          <div className="flex items-center gap-4 mb-6 mx-[197px]">
             <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">
               {currentProject.icon}
             </div>
             <div>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground">{currentProject.title}</h1>
-              {currentProject.subtitle && (
-                <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>
-              )}
+              {currentProject.subtitle && <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>}
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground text-lg max-w-3xl mb-6">{currentProject.description}</p>
+          <p className="text-muted-foreground text-lg max-w-3xl mb-6 mx-[196px]">{currentProject.description}</p>
 
           {/* Tools */}
-          <div className="flex flex-wrap gap-2 mb-6">
-            {currentProject.tools.map((tool, index) => (
-              <span
-                key={index}
-                className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
-              >
+          <div className="flex flex-wrap gap-2 mb-6 mx-[198px]">
+            {currentProject.tools.map((tool, index) => <span key={index} className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors">
                 {tool}
-              </span>
-            ))}
+              </span>)}
           </div>
 
           {/* Sub Categories Tabs */}
-          {currentProject.subCategories && currentProject.subCategories.length > 0 && (
-            <div className="flex flex-wrap gap-3 mb-8 pb-4 border-b border-border">
-              <button
-                onClick={() => setActiveSubCategory(null)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
-                  activeSubCategory === null
-                    ? 'bg-primary text-primary-foreground shadow-lg'
-                    : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'
-                }`}
-              >
+          {currentProject.subCategories && currentProject.subCategories.length > 0 && <div className="flex flex-wrap gap-3 mb-8 pb-4 border-b border-border">
+              <button onClick={() => setActiveSubCategory(null)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
                 全部作品
               </button>
-              {currentProject.subCategories.map((sub) => (
-                <button
-                  key={sub.id}
-                  onClick={() => setActiveSubCategory(sub.id)}
-                  className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
-                    activeSubCategory === sub.id
-                      ? 'bg-primary text-primary-foreground shadow-lg'
-                      : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'
-                  }`}
-                >
+              {currentProject.subCategories.map(sub => <button key={sub.id} onClick={() => setActiveSubCategory(sub.id)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === sub.id ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
                   {sub.title}
-                </button>
-              ))}
-            </div>
-          )}
+                </button>)}
+            </div>}
 
           {/* Masonry Images */}
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[77px]">
-            {displayImages.map((img, idx) => (
-              <LazyImage
-                key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
-                src={img.src}
-                alt={img.alt || `${currentProject.title} - Image ${idx + 1}`}
-                className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300"
-                priority={idx < 3}
-                onClick={() => setLightboxIndex(idx)}
-              />
-            ))}
+          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
+            {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
           </div>
         </div>
       </div>
 
       {/* Lightbox */}
-      {lightboxIndex !== null && (
-        <Lightbox
-          images={displayImages}
-          currentIndex={lightboxIndex}
-          onClose={() => setLightboxIndex(null)}
-          onNavigate={setLightboxIndex}
-        />
-      )}
-    </div>
-  );
+      {lightboxIndex !== null && <Lightbox images={displayImages} currentIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} onNavigate={setLightboxIndex} />}
+    </div>;
 };
 export default ProjectDetail;
