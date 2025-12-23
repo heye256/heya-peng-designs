@@ -166,7 +166,7 @@ const ProjectDetail = ({
 
       {/* Scrollable Content */}
       <div ref={contentRef} className={`h-full ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}`}>
-        <div className="container mx-auto px-6 py-24">
+        <div className="container mx-auto px-6 py-24 rounded-sm">
           {/* Header */}
           <div className="flex items-center gap-4 mb-6 mx-[197px]">
             <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">
@@ -189,7 +189,7 @@ const ProjectDetail = ({
           </div>
 
           {/* Sub Categories Tabs */}
-          {currentProject.subCategories && currentProject.subCategories.length > 0 && <div className="flex flex-wrap gap-3 mb-8 pb-4 border-b border-border">
+          {currentProject.subCategories && currentProject.subCategories.length > 0 && <div className="flex-wrap gap-3 mb-8 pb-4 border-b border-border flex-row flex items-start justify-center">
               <button onClick={() => setActiveSubCategory(null)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
                 全部作品
               </button>
@@ -199,35 +199,13 @@ const ProjectDetail = ({
             </div>}
 
           {/* Images */}
-          {currentProject.id === 'game-ui' ? (
-            /* 游戏UI - 纵向居中大图布局 */
-            <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
-              {displayImages.map((img, idx) => (
-                <LazyImage
-                  key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
-                  src={img.src}
-                  alt={img.alt || `${currentProject.title} - Image ${idx + 1}`}
-                  className="w-full rounded-xl shadow-card hover:shadow-gold transition-shadow duration-300"
-                  priority={idx < 3}
-                  onClick={() => setLightboxIndex(idx)}
-                />
-              ))}
-            </div>
-          ) : (
-            /* 其他项目 - 瀑布流布局 */
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
-              {displayImages.map((img, idx) => (
-                <LazyImage
-                  key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
-                  src={img.src}
-                  alt={img.alt || `${currentProject.title} - Image ${idx + 1}`}
-                  className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300"
-                  priority={idx < 3}
-                  onClick={() => setLightboxIndex(idx)}
-                />
-              ))}
-            </div>
-          )}
+          {currentProject.id === 'game-ui' ? (/* 游戏UI - 纵向居中大图布局 */
+        <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
+              {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="w-full rounded-xl shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
+            </div>) : (/* 其他项目 - 瀑布流布局 */
+        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
+              {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
+            </div>)}
         </div>
       </div>
 
