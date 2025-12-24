@@ -27,6 +27,7 @@ const categories: Category[] = [
     description: '专注于游戏界面设计，打造沉浸式用户体验。从概念设计到最终实现，每一个像素都经过精心打磨，确保视觉与功能的完美融合。',
     tools: ['Figma', 'Photoshop', 'After Effects', 'Unity'],
     images: [
+      { src: '/image/works/youxi/000.png', alt: '游戏场景' },
       { src: '/image/works/youxi/001.png', alt: '游戏场景' },
       { src: '/image/works/youxi/002.png', alt: '游戏元素' },
       { src: '/image/works/youxi/003.png', alt: '界面设计' },
@@ -34,7 +35,7 @@ const categories: Category[] = [
       { src: '/image/works/youxi/005.png', alt: '界面设计' },
       { src: '/image/works/youxi/006.png', alt: '界面设计' },
       { src: '/image/works/youxi/007.png', alt: '界面设计' },
-      { src: '/image/works/youxi/008.png', alt: '界面设计' },
+      { src: '/image/works/youxi/008.jpg', alt: '界面设计' },
       { src: '/image/works/youxi/009.webp', alt: '界面设计' },
       { src: '/image/works/youxi/010.jpg', alt: '界面设计' },
     ],
