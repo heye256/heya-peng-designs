@@ -154,10 +154,15 @@ const ProjectDetail = ({
   }, [currentProject, activeSubCategory]);
   const displayImages = getCurrentImages();
 
-  // 切换项目时重置子分类
+  // 切换项目时重置子分类（3D设计默认选中第一个子分类）
   useEffect(() => {
-    setActiveSubCategory(null);
-  }, [currentIndex]);
+    const project = projects[currentIndex];
+    if (project.id === '3d-design' && project.subCategories && project.subCategories.length > 0) {
+      setActiveSubCategory(project.subCategories[0].id);
+    } else {
+      setActiveSubCategory(null);
+    }
+  }, [currentIndex, projects]);
   return <div className="fixed inset-0 z-50 bg-background overflow-hidden">
       {/* Close Button */}
       {lightboxIndex === null && <button onClick={onClose} className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all">
@@ -190,9 +195,10 @@ const ProjectDetail = ({
 
           {/* Sub Categories Tabs */}
           {currentProject.subCategories && currentProject.subCategories.length > 0 && <div className="flex-wrap gap-3 mb-8 pb-4 border-b border-border flex-row flex items-start justify-center">
-              <button onClick={() => setActiveSubCategory(null)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
+              {/* 3D设计板块不显示"全部作品"按钮 */}
+              {currentProject.id !== '3d-design' && <button onClick={() => setActiveSubCategory(null)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
                 全部作品
-              </button>
+              </button>}
               {currentProject.subCategories.map(sub => <button key={sub.id} onClick={() => setActiveSubCategory(sub.id)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === sub.id ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
                   {sub.title}
                 </button>)}
