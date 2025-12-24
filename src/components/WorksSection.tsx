@@ -5,7 +5,7 @@ import ProjectDetail from './ProjectDetail';
 interface SubCategory {
   id: string;
   title: string;
-  images: { src: string; alt?: string }[];
+  images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' }[];
 }
 
 interface Category {
@@ -13,7 +13,7 @@ interface Category {
   title: string;
   subtitle?: string;
   icon: React.ReactNode;
-  images: { src: string; alt?: string }[];
+  images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' }[];
   description: string;
   tools: string[];
   subCategories?: SubCategory[];
@@ -156,19 +156,21 @@ const categories: Category[] = [
         id: 'animation',
         title: '三维动画',
         images: [
-          { src: '/videos/001.mp4', alt: '三维动画' },
-          { src: '/videos/002.mp4', alt: '动态效果' },
-          { src: '/videos/003.mp4', alt: '动态效果' },
-          { src: '/videos/004.mp4', alt: '动态效果' },
-          { src: '/videos/005.mp4', alt: '动态效果' },
-          { src: '/videos/007.mp4', alt: '动态效果' },
-          { src: '/videos/009.mp4', alt: '动态效果' },
-          { src: '/videos/010.mp4', alt: '动态效果' },
-          { src: '/videos/011.mp4', alt: '动态效果' },
-          { src: '/videos/012.mp4', alt: '动态效果' },
-          { src: '/videos/013.mp4', alt: '动态效果' },
-          { src: '/videos/014.mp4', alt: '动态效果' },
-          { src: '/videos/015.mp4', alt: '动态效果' },
+          { src: '/videos/001.mp4', alt: '三维动画', type: 'video' },
+          { src: '/videos/002.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/003.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/004.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/005.mp4', alt: '动态效果', type: 'video' },
+          { src: 'bilibili:BV1ZzB2BdE9R', alt: '三维动画作品', type: 'bilibili' },
+          { src: '/videos/007.mp4', alt: '动态效果', type: 'video' },
+          { src: 'bilibili:BV1BBB2B4EoL', alt: '三维动画作品', type: 'bilibili' },
+          { src: '/videos/009.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/010.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/011.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/012.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/013.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/014.mp4', alt: '动态效果', type: 'video' },
+          { src: '/videos/015.mp4', alt: '动态效果', type: 'video' },
         ],
       },
     ],

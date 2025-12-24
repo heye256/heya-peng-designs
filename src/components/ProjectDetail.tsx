@@ -3,6 +3,7 @@ import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lu
 interface ProjectImage {
   src: string;
   alt?: string;
+  type?: 'image' | 'video' | 'bilibili';
 }
 interface SubCategory {
   id: string;
@@ -128,6 +129,98 @@ const LazyImage = ({
     </div>;
 };
 
+/* ===================== Video Player ===================== */
+const VideoPlayer = ({
+  src,
+  className
+}: {
+  src: string;
+  className?: string;
+}) => {
+  return (
+    <div className={`relative overflow-hidden rounded-xl ${className}`}>
+      <video
+        src={src}
+        controls
+        className="w-full h-auto"
+        preload="metadata"
+      >
+        您的浏览器不支持视频播放
+      </video>
+    </div>
+  );
+};
+
+/* ===================== Bilibili Embed ===================== */
+const BilibiliEmbed = ({
+  bvid,
+  className
+}: {
+  bvid: string;
+  className?: string;
+}) => {
+  return (
+    <div className={`relative overflow-hidden rounded-xl ${className}`}>
+      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+        <iframe
+          src={`https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&autoplay=0`}
+          className="absolute inset-0 w-full h-full"
+          allowFullScreen
+          scrolling="no"
+          frameBorder="0"
+          sandbox="allow-top-navigation allow-same-origin allow-forms allow-scripts"
+        />
+      </div>
+    </div>
+  );
+};
+
+/* ===================== Media Item ===================== */
+const MediaItem = ({
+  item,
+  index,
+  projectTitle,
+  priority = false,
+  onImageClick
+}: {
+  item: ProjectImage;
+  index: number;
+  projectTitle: string;
+  priority?: boolean;
+  onImageClick?: () => void;
+}) => {
+  const type = item.type || 'image';
+  
+  if (type === 'bilibili') {
+    const bvid = item.src.replace('bilibili:', '');
+    return (
+      <BilibiliEmbed
+        bvid={bvid}
+        className="w-full shadow-card hover:shadow-gold transition-shadow duration-300"
+      />
+    );
+  }
+  
+  if (type === 'video') {
+    return (
+      <VideoPlayer
+        src={item.src}
+        className="w-full shadow-card hover:shadow-gold transition-shadow duration-300"
+      />
+    );
+  }
+  
+  return (
+    <LazyImage
+      src={item.src}
+      alt={item.alt || `${projectTitle} - Image ${index + 1}`}
+      className="w-full rounded-xl shadow-card hover:shadow-gold transition-shadow duration-300"
+      priority={priority}
+      onClick={onImageClick}
+    />
+  );
+};
+
 /* ===================== Project Detail ===================== */
 const ProjectDetail = ({
   projects,
@@ -208,12 +301,30 @@ const ProjectDetail = ({
           {(currentProject.id === 'game-ui' || (currentProject.id === '3d-design' && activeSubCategory === 'animation')) ? (
             /* 游戏UI和三维动画 - 纵向居中大图布局 */
             <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
-              {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="w-full rounded-xl shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
+              {displayImages.map((img, idx) => (
+                <MediaItem
+                  key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
+                  item={img}
+                  index={idx}
+                  projectTitle={currentProject.title}
+                  priority={idx < 3}
+                  onImageClick={() => !img.type || img.type === 'image' ? setLightboxIndex(idx) : undefined}
+                />
+              ))}
             </div>
           ) : (
             /* 其他项目 - 瀑布流布局 */
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
-              {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
+              {displayImages.map((img, idx) => (
+                <MediaItem
+                  key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
+                  item={img}
+                  index={idx}
+                  projectTitle={currentProject.title}
+                  priority={idx < 3}
+                  onImageClick={() => !img.type || img.type === 'image' ? setLightboxIndex(idx) : undefined}
+                />
+              ))}
             </div>
           )}
         </div>
