@@ -114,8 +114,16 @@ const categories: Category[] = [
         id: 'texturing',
         title: '材质贴图',
         images: [
-          { src: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=800&q=80', alt: '材质贴图' },
-          { src: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/001.png', alt: '材质贴图' },
+          { src: '/image/works/3d/caizhi/002.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/003.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/004.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/005.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/006.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/007.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/008.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/009.png', alt: 'PBR材质' },
+          { src: '/image/works/3d/caizhi/010.png', alt: 'PBR材质' },
         ],
       },
       {
