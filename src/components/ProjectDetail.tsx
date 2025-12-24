@@ -199,13 +199,17 @@ const ProjectDetail = ({
             </div>}
 
           {/* Images */}
-          {currentProject.id === 'game-ui' ? (/* 游戏UI - 纵向居中大图布局 */
-        <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
+          {(currentProject.id === 'game-ui' || (currentProject.id === '3d-design' && activeSubCategory === 'animation')) ? (
+            /* 游戏UI和三维动画 - 纵向居中大图布局 */
+            <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
               {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="w-full rounded-xl shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
-            </div>) : (/* 其他项目 - 瀑布流布局 */
-        <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
+            </div>
+          ) : (
+            /* 其他项目 - 瀑布流布局 */
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
               {displayImages.map((img, idx) => <LazyImage key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`} src={img.src} alt={img.alt || `${currentProject.title} - Image ${idx + 1}`} className="rounded-xl break-inside-avoid shadow-card hover:shadow-gold transition-shadow duration-300" priority={idx < 3} onClick={() => setLightboxIndex(idx)} />)}
-            </div>)}
+            </div>
+          )}
         </div>
       </div>
 
