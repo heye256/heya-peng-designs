@@ -31,10 +31,9 @@ const HeroSection = ({
             </h1>
 
             {/* 描述文字 */}
-            <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify text-white">专注 平面设计 与 3D美术 ，
-能够使用最新的AI工具来高效的完成工作
-
-熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。<span className="text-primary font-medium"> 平面设计 </span>
+            <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify text-white">
+              专注
+              <span className="text-primary font-medium"> 平面设计 </span>
               与
               <span className="text-primary font-medium"> 3D美术 </span>。
               <br />
