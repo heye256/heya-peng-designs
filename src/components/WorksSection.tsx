@@ -84,8 +84,30 @@ const categories: Category[] = [
         id: 'modeling',
         title: '建模作品',
         images: [
-          { src: '/image/works/3d.png', alt: '3D建模作品' },
-          { src: 'https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80', alt: '角色建模' },
+          { src: '/image/works/3d/mode/001.png' },
+          { src: '/image/works/3d/mode/001.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/002.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/003.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/004.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/005.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/006.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/007.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/008.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/008.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/010.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/011.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/012.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/013.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/014.png', alt: '角色建模' },
+          { src: '/image/works/3d/mode/015.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/016.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/017.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/018.jpg', alt: '角色建模' },
+          
+          
+          
+          
+          
         ],
       },
       {
