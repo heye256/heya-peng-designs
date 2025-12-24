@@ -103,6 +103,10 @@ const categories: Category[] = [
           { src: '/image/works/3d/mode/016.jpg', alt: '角色建模' },
           { src: '/image/works/3d/mode/017.jpg', alt: '角色建模' },
           { src: '/image/works/3d/mode/018.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/019.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/020.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/021.jpg', alt: '角色建模' },
+          { src: '/image/works/3d/mode/022.jpg', alt: '角色建模' },
           
           
           
