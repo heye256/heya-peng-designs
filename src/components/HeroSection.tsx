@@ -1,12 +1,11 @@
 import { ChevronDown } from 'lucide-react';
-
 interface HeroSectionProps {
   onBrowseWorks: () => void;
 }
-
-const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
-  return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
+const HeroSection = ({
+  onBrowseWorks
+}: HeroSectionProps) => {
+  return <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
         <video autoPlay muted loop playsInline className="w-full h-full object-cover">
@@ -14,7 +13,7 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
         </video>
 
         {/* 深色渐隐遮罩 - 移动端全覆盖，桌面端从左侧渐变 */}
-        <div className="absolute inset-0 bg-black/60 md:bg-gradient-to-r md:from-black/80 md:via-black/40 md:to-transparent" />
+        
       </div>
 
       {/* Content */}
@@ -45,10 +44,7 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
             </p>
 
             {/* 按钮 */}
-            <button
-              onClick={onBrowseWorks}
-              className="inline-flex items-center gap-2 md:gap-3 bg-primary text-black font-bold px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl text-base md:text-lg hover:opacity-90 transition"
-            >
+            <button onClick={onBrowseWorks} className="inline-flex items-center gap-2 md:gap-3 bg-primary text-black font-bold px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl text-base md:text-lg hover:opacity-90 transition">
               浏览作品
               <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />
             </button>
@@ -60,8 +56,6 @@ const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
       <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 animate-bounce z-10">
         <ChevronDown className="w-6 h-6 md:w-8 md:h-8 text-white/60" />
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
