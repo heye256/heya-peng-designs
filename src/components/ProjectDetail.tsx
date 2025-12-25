@@ -137,13 +137,33 @@ const VideoPlayer = ({
   src: string;
   className?: string;
 }) => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleMouseEnter = () => {
+    if (videoRef.current) {
+      videoRef.current.play();
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (videoRef.current) {
+      videoRef.current.pause();
+    }
+  };
+
   return (
-    <div className={`relative overflow-hidden rounded-xl ${className}`}>
+    <div 
+      className={`relative overflow-hidden rounded-xl ${className}`}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <video
+        ref={videoRef}
         src={src}
         controls
         className="w-full h-auto"
         preload="metadata"
+        muted
       >
         您的浏览器不支持视频播放
       </video>
