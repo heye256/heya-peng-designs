@@ -216,25 +216,25 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
   };
 
   return (
-    <section ref={sectionRef} className="relative py-24 min-h-screen">
+    <section ref={sectionRef} className="relative py-12 md:py-24 min-h-screen">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-b from-background via-card to-background" />
       
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
+        <div className="text-center mb-8 md:mb-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">
             <span className="text-gradient-gold">作品展示</span>
           </h2>
-          <p className="text-muted-foreground text-lg">点击任意板块查看详情</p>
+          <p className="text-muted-foreground text-sm md:text-lg">点击任意板块查看详情</p>
         </div>
 
         {/* Category Cards */}
-        <div className="flex flex-col gap-8 max-w-[1400px] mx-auto">
+        <div className="flex flex-col gap-4 md:gap-8 max-w-[1400px] mx-auto">
           {categories.map((category, index) => (
             <div
               key={category.id}
               onClick={() => openProject(index)}
-              className="section-card cursor-pointer group h-[450px] md:h-[500px]"
+              className="section-card cursor-pointer group h-[280px] sm:h-[350px] md:h-[450px] lg:h-[500px]"
               style={{ 
                 animationDelay: `${index * 0.1}s`,
               }}
@@ -250,42 +250,44 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
               </div>
 
               {/* Content */}
-              <div className="absolute bottom-0 left-0 right-0 p-8">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-3 rounded-xl bg-primary/20 text-primary backdrop-blur-sm">
-                    {category.icon}
+              <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8">
+                <div className="flex items-center gap-3 md:gap-4 mb-2 md:mb-4">
+                  <div className="p-2 md:p-3 rounded-lg md:rounded-xl bg-primary/20 text-primary backdrop-blur-sm">
+                    <div className="w-5 h-5 md:w-8 md:h-8 [&>svg]:w-full [&>svg]:h-full">
+                      {category.icon}
+                    </div>
                   </div>
                   <div>
-                    <h3 className="text-2xl md:text-3xl font-bold text-foreground">
+                    <h3 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground">
                       {category.title}
                     </h3>
                     {category.subtitle && (
-                      <p className="text-primary text-sm mt-1">{category.subtitle}</p>
+                      <p className="text-primary text-xs md:text-sm mt-0.5 md:mt-1">{category.subtitle}</p>
                     )}
                   </div>
                 </div>
-                <p className="text-muted-foreground line-clamp-2">{category.description}</p>
+                <p className="text-muted-foreground text-xs sm:text-sm md:text-base line-clamp-2">{category.description}</p>
                 
                 {/* Tools Preview */}
-                <div className="flex flex-wrap gap-2 mt-4">
+                <div className="flex flex-wrap gap-1.5 md:gap-2 mt-2 md:mt-4">
                   {category.tools.slice(0, 3).map((tool, toolIndex) => (
                     <span
                       key={toolIndex}
-                      className="px-3 py-1 rounded-full bg-card/50 backdrop-blur-sm text-xs text-muted-foreground border border-border/50"
+                      className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-card/50 backdrop-blur-sm text-[10px] md:text-xs text-muted-foreground border border-border/50"
                     >
                       {tool}
                     </span>
                   ))}
                   {category.tools.length > 3 && (
-                    <span className="px-3 py-1 rounded-full bg-card/50 backdrop-blur-sm text-xs text-primary">
+                    <span className="px-2 md:px-3 py-0.5 md:py-1 rounded-full bg-card/50 backdrop-blur-sm text-[10px] md:text-xs text-primary">
                       +{category.tools.length - 3}
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Hover Indicator */}
-              <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+              {/* Hover Indicator - 隐藏在移动端 */}
+              <div className="hidden md:block absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
                 <div className="px-4 py-2 rounded-full bg-primary/20 text-primary text-sm backdrop-blur-sm">
                   点击查看详情
                 </div>
