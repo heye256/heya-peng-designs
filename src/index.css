@@ -267,3 +267,13 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(38, 92%, 50%, 0.7);
 }
+
+/* Shimmer animation for skeleton loading */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
