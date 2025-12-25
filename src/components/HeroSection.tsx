@@ -27,12 +27,12 @@ const HeroSection = ({
             </h1>
 
             {/* AI 技术亮点 */}
-            <p className="text-xl md:text-2xl font-semibold text-primary mb-6 animate-pulse">
+            <p className="text-xl md:text-2xl font-semibold text-primary mb-6 animate-pulse mx-[65px]">
               能够熟练的使用 AI 最新技术高效的完成工作内容
             </p>
 
             {/* 描述文字 */}
-            <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify text-white">
+            <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl text-white mx-0 text-left py-0 px-0 pb-0 my-[11px]">
               专注
               <span className="text-primary font-medium"> 平面设计 </span>
               与
@@ -43,7 +43,7 @@ const HeroSection = ({
             </p>
 
             {/* 按钮 */}
-            <button onClick={onBrowseWorks} className="inline-flex items-center gap-3 bg-primary text-black font-bold px-8 py-4 rounded-2xl text-lg hover:opacity-90 transition">
+            <button onClick={onBrowseWorks} className="inline-flex items-center gap-3 bg-primary text-black font-bold px-8 py-4 rounded-2xl text-lg hover:opacity-90 transition text-center mx-0">
               浏览作品
               <ChevronDown className="w-5 h-5" />
             </button>
