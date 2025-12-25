@@ -182,7 +182,6 @@ const categories: Category[] = [
     description: '品牌视觉、海报设计与排版。将创意转化为引人注目的视觉传达，提升品牌价值与识别度。',
     tools: ['Illustrator', 'InDesign', 'Photoshop', 'Canva'],
     images: [
-      https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80
       { src: 'https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=80', alt: '品牌设计' },
       { src: '/image/works/pinmian/001.png', alt: '品牌设计' },
       { src: '/image/works/pinmian/002.png', alt: '品牌设计' },
