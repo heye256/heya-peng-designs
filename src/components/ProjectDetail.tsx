@@ -52,37 +52,83 @@ const Lightbox = ({
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [currentIndex, images.length, onClose, onNavigate]);
-  return <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center" onClick={onClose}>
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-black/95 flex flex-col items-center justify-center" onClick={onClose}>
+      {/* 关闭按钮 */}
+      <button 
+        onClick={onClose}
+        className="absolute top-4 right-4 p-2 rounded-full bg-white/10 text-white hover:bg-white/20 transition z-10"
+      >
+        <X className="w-6 h-6" />
+      </button>
+
       {/* 图片计数 */}
-      <div className="absolute top-4 left-4 px-4 py-2 rounded-full bg-white/10 text-white text-sm">
+      <div className="absolute top-4 left-4 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-white/10 text-white text-xs md:text-sm">
         {currentIndex + 1} / {images.length}
       </div>
 
       {/* 图片容器 */}
-      <div className="relative max-w-[90vw] max-h-[80vh] flex items-center justify-center" onClick={e => e.stopPropagation()}>
-        {/* 左切换 */}
-        {currentIndex > 0 && <button onClick={() => onNavigate(currentIndex - 1)} className="absolute -left-12 text-white/70 hover:text-white transition">
-            <ChevronLeft className="w-10 h-10" />
-          </button>}
+      <div className="relative w-full h-full flex items-center justify-center px-4 md:px-16" onClick={e => e.stopPropagation()}>
+        {/* 左切换 - 移动端在图片内部 */}
+        {currentIndex > 0 && (
+          <button 
+            onClick={() => onNavigate(currentIndex - 1)} 
+            className="absolute left-2 md:left-4 z-10 p-2 rounded-full bg-black/50 md:bg-transparent text-white/70 hover:text-white transition"
+          >
+            <ChevronLeft className="w-6 h-6 md:w-10 md:h-10" />
+          </button>
+        )}
 
-        <img src={images[currentIndex].src} alt={images[currentIndex].alt || ''} className="max-w-[90vw] max-h-[80vh] object-contain rounded-lg select-none" draggable={false} />
+        <img 
+          src={images[currentIndex].src} 
+          alt={images[currentIndex].alt || ''} 
+          className="max-w-full max-h-[70vh] md:max-h-[80vh] object-contain rounded-lg select-none" 
+          draggable={false} 
+        />
 
         {/* 右切换 */}
-        {currentIndex < images.length - 1 && <button onClick={() => onNavigate(currentIndex + 1)} className="absolute -right-12 text-white/70 hover:text-white transition">
-            <ChevronRight className="w-10 h-10" />
-          </button>}
+        {currentIndex < images.length - 1 && (
+          <button 
+            onClick={() => onNavigate(currentIndex + 1)} 
+            className="absolute right-2 md:right-4 z-10 p-2 rounded-full bg-black/50 md:bg-transparent text-white/70 hover:text-white transition"
+          >
+            <ChevronRight className="w-6 h-6 md:w-10 md:h-10" />
+          </button>
+        )}
       </div>
 
-      {/* 缩略图条 - 固定在底部 */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto">
-        {images.map((img, idx) => <button key={idx} onClick={e => {
-        e.stopPropagation();
-        onNavigate(idx);
-      }} className={`w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 transition-all ${idx === currentIndex ? 'ring-2 ring-white scale-110' : 'opacity-50 hover:opacity-100'}`}>
+      {/* 缩略图条 - 移动端隐藏或缩小 */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 hidden md:flex gap-2 px-4 py-2 bg-black/50 rounded-xl backdrop-blur-sm max-w-[90vw] overflow-x-auto">
+        {images.map((img, idx) => (
+          <button 
+            key={idx} 
+            onClick={e => {
+              e.stopPropagation();
+              onNavigate(idx);
+            }} 
+            className={`w-12 h-12 lg:w-16 lg:h-16 rounded-lg overflow-hidden flex-shrink-0 transition-all ${idx === currentIndex ? 'ring-2 ring-white scale-110' : 'opacity-50 hover:opacity-100'}`}
+          >
             <img src={img.src} alt="" className="w-full h-full object-cover" />
-          </button>)}
+          </button>
+        ))}
       </div>
-    </div>;
+
+      {/* 移动端底部指示器 */}
+      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex md:hidden gap-1.5">
+        {images.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={e => {
+              e.stopPropagation();
+              onNavigate(idx);
+            }}
+            className={`w-2 h-2 rounded-full transition-all ${idx === currentIndex ? 'bg-white w-4' : 'bg-white/40'}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 /* ===================== Lazy Image ===================== */
@@ -276,51 +322,77 @@ const ProjectDetail = ({
       setActiveSubCategory(null);
     }
   }, [currentIndex, projects]);
-  return <div className="fixed inset-0 z-50 bg-background overflow-hidden">
+  return (
+    <div className="fixed inset-0 z-50 bg-background overflow-hidden">
       {/* Close Button */}
-      {lightboxIndex === null && <button onClick={onClose} className="fixed top-6 right-6 z-50 p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all">
-          <X className="w-6 h-6" />
-        </button>}
+      {lightboxIndex === null && (
+        <button 
+          onClick={onClose} 
+          className="fixed top-4 right-4 md:top-6 md:right-6 z-50 p-2 md:p-3 rounded-full bg-card/80 backdrop-blur-sm hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
+        >
+          <X className="w-5 h-5 md:w-6 md:h-6" />
+        </button>
+      )}
 
       {/* Scrollable Content */}
       <div ref={contentRef} className={`h-full ${lightboxIndex !== null ? 'overflow-hidden' : 'overflow-y-auto'}`}>
-        <div className="container mx-auto px-6 py-24 rounded-sm">
+        <div className="container mx-auto px-4 md:px-6 py-16 md:py-24">
           {/* Header */}
-          <div className="flex items-center gap-4 mb-6 mx-[197px]">
-            <div className="p-4 rounded-2xl bg-gradient-gold text-primary-foreground">
-              {currentProject.icon}
+          <div className="flex items-center gap-3 md:gap-4 mb-4 md:mb-6">
+            <div className="p-3 md:p-4 rounded-xl md:rounded-2xl bg-gradient-gold text-primary-foreground">
+              <div className="w-6 h-6 md:w-8 md:h-8 [&>svg]:w-full [&>svg]:h-full">
+                {currentProject.icon}
+              </div>
             </div>
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-foreground">{currentProject.title}</h1>
-              {currentProject.subtitle && <p className="text-primary mt-2 text-lg">{currentProject.subtitle}</p>}
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground">{currentProject.title}</h1>
+              {currentProject.subtitle && <p className="text-primary mt-1 md:mt-2 text-sm md:text-lg">{currentProject.subtitle}</p>}
             </div>
           </div>
 
           {/* Description */}
-          <p className="text-muted-foreground text-lg max-w-3xl mb-6 mx-[196px]">{currentProject.description}</p>
+          <p className="text-muted-foreground text-sm md:text-lg max-w-3xl mb-4 md:mb-6">{currentProject.description}</p>
 
           {/* Tools */}
-          <div className="flex flex-wrap gap-2 mb-6 mx-[198px]">
-            {currentProject.tools.map((tool, index) => <span key={index} className="px-4 py-2 rounded-full bg-card border border-border text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors">
+          <div className="flex flex-wrap gap-1.5 md:gap-2 mb-4 md:mb-6">
+            {currentProject.tools.map((tool, index) => (
+              <span 
+                key={index} 
+                className="px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-card border border-border text-xs md:text-sm text-muted-foreground hover:border-primary hover:text-primary transition-colors"
+              >
                 {tool}
-              </span>)}
+              </span>
+            ))}
           </div>
 
           {/* Sub Categories Tabs */}
-          {currentProject.subCategories && currentProject.subCategories.length > 0 && <div className="flex-wrap gap-3 mb-8 pb-4 border-b border-border flex-row flex items-start justify-center">
+          {currentProject.subCategories && currentProject.subCategories.length > 0 && (
+            <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8 pb-4 border-b border-border justify-start md:justify-center overflow-x-auto">
               {/* 3D设计板块不显示"全部作品"按钮 */}
-              {currentProject.id !== '3d-design' && <button onClick={() => setActiveSubCategory(null)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
-                全部作品
-              </button>}
-              {currentProject.subCategories.map(sub => <button key={sub.id} onClick={() => setActiveSubCategory(sub.id)} className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${activeSubCategory === sub.id ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}>
+              {currentProject.id !== '3d-design' && (
+                <button 
+                  onClick={() => setActiveSubCategory(null)} 
+                  className={`px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}
+                >
+                  全部作品
+                </button>
+              )}
+              {currentProject.subCategories.map(sub => (
+                <button 
+                  key={sub.id} 
+                  onClick={() => setActiveSubCategory(sub.id)} 
+                  className={`px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${activeSubCategory === sub.id ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}
+                >
                   {sub.title}
-                </button>)}
-            </div>}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Images */}
           {(currentProject.id === 'game-ui' || (currentProject.id === '3d-design' && activeSubCategory === 'animation')) ? (
             /* 游戏UI和三维动画 - 纵向居中大图布局 */
-            <div className="flex flex-col items-center gap-8 max-w-4xl mx-auto">
+            <div className="flex flex-col items-center gap-4 md:gap-8 max-w-4xl mx-auto">
               {displayImages.map((img, idx) => (
                 <MediaItem
                   key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
@@ -334,7 +406,7 @@ const ProjectDetail = ({
             </div>
           ) : (
             /* 其他项目 - 瀑布流布局 */
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 my-[4px] px-[120px] py-[2px] mx-[83px]">
+            <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 md:gap-6 space-y-4 md:space-y-6">
               {displayImages.map((img, idx) => (
                 <MediaItem
                   key={`${currentProject.id}-${activeSubCategory || 'all'}-${idx}`}
@@ -351,7 +423,15 @@ const ProjectDetail = ({
       </div>
 
       {/* Lightbox */}
-      {lightboxIndex !== null && <Lightbox images={displayImages} currentIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} onNavigate={setLightboxIndex} />}
-    </div>;
+      {lightboxIndex !== null && (
+        <Lightbox 
+          images={displayImages} 
+          currentIndex={lightboxIndex} 
+          onClose={() => setLightboxIndex(null)} 
+          onNavigate={setLightboxIndex} 
+        />
+      )}
+    </div>
+  );
 };
 export default ProjectDetail;

@@ -27,51 +27,53 @@ const ContactSection = ({ sectionRef }: ContactSectionProps) => {
   ];
 
   return (
-    <section ref={sectionRef} className="relative py-24 min-h-[60vh] flex items-center">
+    <section ref={sectionRef} className="relative py-12 md:py-24 min-h-[50vh] md:min-h-[60vh] flex items-center">
       {/* Background */}
       <div className="absolute inset-0 bg-gradient-to-t from-background via-card to-background" />
       
       {/* Decorative Elements */}
-      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute top-1/4 right-1/4 w-48 h-48 bg-primary/10 rounded-full blur-2xl" />
+      <div className="absolute bottom-0 left-1/4 w-32 md:w-64 h-32 md:h-64 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 right-1/4 w-24 md:w-48 h-24 md:h-48 bg-primary/10 rounded-full blur-2xl" />
       
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="container mx-auto px-4 md:px-6 relative z-10">
         <div className="max-w-4xl mx-auto text-center">
           {/* Header */}
-          <div className="mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+          <div className="mb-8 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">
               <span className="text-gradient-gold">联系方式</span>
             </h2>
-            <p className="text-muted-foreground text-lg">
+            <p className="text-muted-foreground text-sm md:text-lg">
               期待与您的合作
             </p>
           </div>
 
           {/* Contact Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
             {contactInfo.map((contact, index) => (
               <div
                 key={contact.label}
-                className="group p-8 rounded-2xl bg-gradient-card border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-gold"
+                className="group p-4 sm:p-6 md:p-8 rounded-xl md:rounded-2xl bg-gradient-card border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-gold"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="inline-flex p-4 rounded-xl bg-primary/10 text-primary mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  {contact.icon}
+                <div className="inline-flex p-3 md:p-4 rounded-lg md:rounded-xl bg-primary/10 text-primary mb-3 md:mb-6 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <div className="w-5 h-5 md:w-8 md:h-8 [&>svg]:w-full [&>svg]:h-full">
+                    {contact.icon}
+                  </div>
                 </div>
                 
-                <h3 className="text-muted-foreground text-sm uppercase tracking-wider mb-2">
+                <h3 className="text-muted-foreground text-xs md:text-sm uppercase tracking-wider mb-1 md:mb-2">
                   {contact.label}
                 </h3>
                 
                 {contact.href ? (
                   <a
                     href={contact.href}
-                    className="text-xl font-semibold text-foreground hover:text-primary transition-colors break-all"
+                    className="text-sm sm:text-base md:text-xl font-semibold text-foreground hover:text-primary transition-colors break-all"
                   >
                     {contact.value}
                   </a>
                 ) : (
-                  <p className="text-xl font-semibold text-foreground break-all">
+                  <p className="text-sm sm:text-base md:text-xl font-semibold text-foreground break-all">
                     {contact.value}
                   </p>
                 )}
@@ -80,8 +82,8 @@ const ContactSection = ({ sectionRef }: ContactSectionProps) => {
           </div>
 
           {/* Footer */}
-          <div className="mt-16 pt-8 border-t border-border">
-            <p className="text-muted-foreground">
+          <div className="mt-8 md:mt-16 pt-6 md:pt-8 border-t border-border">
+            <p className="text-muted-foreground text-xs md:text-base">
               © 2024 何亚鹏 · 作品集
             </p>
           </div>
