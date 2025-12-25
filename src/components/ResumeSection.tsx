@@ -11,12 +11,7 @@ const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
   const resumePdf = '/resume.pdf';
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = resumePdf;
-    link.download = '何亚鹏_简历.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    window.open(resumePdf, '_blank');
   };
 
   return (
