@@ -30,6 +30,11 @@ const HeroSection = ({
               </span>
             </h1>
 
+            {/* AI 技术亮点 */}
+            <p className="text-xl md:text-2xl font-semibold text-primary mb-6 animate-pulse">
+              能够熟练的使用 AI 最新技术高效的完成工作内容
+            </p>
+
             {/* 描述文字 */}
             <p className="text-lg md:text-xl leading-relaxed mb-10 max-w-2xl px-0 mx-[20px] text-justify text-white">
               专注
