@@ -131,6 +131,21 @@ const Lightbox = ({
   );
 };
 
+/* ===================== Image Skeleton ===================== */
+const ImageSkeleton = () => (
+  <div className="absolute inset-0 bg-card overflow-hidden">
+    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-muted/30 to-transparent animate-[shimmer_1.5s_infinite]" 
+      style={{ 
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 1.5s infinite linear'
+      }} 
+    />
+    <div className="absolute inset-0 flex items-center justify-center">
+      <div className="w-12 h-12 rounded-full border-2 border-primary/20 border-t-primary animate-spin" />
+    </div>
+  </div>
+);
+
 /* ===================== Lazy Image ===================== */
 const LazyImage = ({
   src,
@@ -147,7 +162,9 @@ const LazyImage = ({
 }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(priority);
+  const [hasError, setHasError] = useState(false);
   const imgRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (priority) {
       setIsInView(true);
@@ -159,20 +176,48 @@ const LazyImage = ({
         observer.disconnect();
       }
     }, {
-      rootMargin: '200px'
+      rootMargin: '400px' // 增加预加载距离
     });
     if (imgRef.current) observer.observe(imgRef.current);
     return () => observer.disconnect();
   }, [priority]);
-  return <div ref={imgRef} className={`relative overflow-hidden group cursor-pointer ${className}`} onClick={onClick}>
-      {!isLoaded && <div className="absolute inset-0 bg-card animate-pulse" />}
-      {isInView && <>
-          <img src={src} alt={alt} className={`w-full h-auto object-contain transition-all duration-500 group-hover:scale-105 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} onLoad={() => setIsLoaded(true)} loading={priority ? 'eager' : 'lazy'} />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
-            <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-        </>}
-    </div>;
+
+  return (
+    <div 
+      ref={imgRef} 
+      className={`relative overflow-hidden group cursor-pointer min-h-[120px] ${className}`} 
+      onClick={onClick}
+    >
+      {/* 骨架屏加载状态 */}
+      {!isLoaded && !hasError && <ImageSkeleton />}
+      
+      {/* 加载失败状态 */}
+      {hasError && (
+        <div className="absolute inset-0 bg-card flex items-center justify-center">
+          <div className="text-muted-foreground text-sm">加载失败</div>
+        </div>
+      )}
+      
+      {isInView && (
+        <>
+          <img 
+            src={src} 
+            alt={alt} 
+            className={`w-full h-auto object-contain transition-all duration-500 group-hover:scale-105 ${isLoaded ? 'opacity-100' : 'opacity-0'}`} 
+            onLoad={() => setIsLoaded(true)} 
+            onError={() => setHasError(true)}
+            loading={priority ? 'eager' : 'lazy'}
+            decoding="async"
+          />
+          {isLoaded && (
+            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all flex items-center justify-center">
+              <ZoomIn className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
 };
 
 /* ===================== Video Player ===================== */
