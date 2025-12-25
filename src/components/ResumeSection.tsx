@@ -1,17 +1,24 @@
-import { Download, Eye, FileText, X } from 'lucide-react';
-import { useState } from 'react';
+import { Download, Eye, FileText } from 'lucide-react';
 
 interface ResumeSectionProps {
   sectionRef: React.RefObject<HTMLElement>;
 }
 
 const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-
   const resumePdf = '/resume.pdf';
 
-  const handleDownload = () => {
+  const handlePreview = () => {
     window.open(resumePdf, '_blank');
+  };
+
+  const handleDownload = () => {
+    const link = document.createElement('a');
+    link.href = resumePdf;
+    link.download = '何亚鹏_简历.pdf';
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -46,7 +53,7 @@ const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
-                onClick={() => setIsPreviewOpen(true)}
+                onClick={handlePreview}
                 className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold transition-all duration-300 hover:shadow-elevated"
               >
                 <Eye className="w-5 h-5" />
@@ -78,31 +85,6 @@ const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
           </div>
         </div>
       </div>
-
-      {/* PDF Preview Modal */}
-      {isPreviewOpen && (
-        <div 
-          className="fixed inset-0 z-50 bg-background/98 flex items-center justify-center p-4"
-          onClick={() => setIsPreviewOpen(false)}
-        >
-          <div 
-            className="relative w-full max-w-5xl h-[90vh] bg-card rounded-xl overflow-hidden shadow-card"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <iframe
-              src={resumePdf}
-              className="w-full h-full"
-              title="简历预览"
-            />
-          </div>
-          <button
-            onClick={() => setIsPreviewOpen(false)}
-            className="absolute top-6 right-6 p-3 rounded-full bg-card hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-      )}
     </section>
   );
 };
