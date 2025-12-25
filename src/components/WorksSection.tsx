@@ -46,6 +46,7 @@ const categories: Category[] = [
     description: '数字绘画与插画创作，融合传统技法与现代数字工具，创造富有表现力的视觉作品。',
     tools: ['Procreate', 'Photoshop', 'Clip Studio Paint', 'Wacom'],
     images: [
+      { src: '/image/works/huihua/huihua.webp' },
       { src: '/image/works/huihua/002.webp' },
       { src: '/image/works/huihua/003.webp', alt: '概念艺术' },
       { src: '/image/works/huihua/004.webp', alt: '传统绘画' },
