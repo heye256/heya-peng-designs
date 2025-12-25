@@ -7,20 +7,6 @@ interface ResumeSectionProps {
 const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
   const resumePdf = '/resume.pdf';
 
-  const handlePreview = () => {
-    window.open(resumePdf, '_blank');
-  };
-
-  const handleDownload = () => {
-    const link = document.createElement('a');
-    link.href = resumePdf;
-    link.download = '何亚鹏_简历.pdf';
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
-
   return (
     <section ref={sectionRef} className="relative py-24 min-h-screen flex items-center">
       {/* Background */}
@@ -52,23 +38,24 @@ const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button
-                onClick={handlePreview}
+              <a
+                href={resumePdf}
                 className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full bg-secondary hover:bg-secondary/80 text-secondary-foreground font-semibold transition-all duration-300 hover:shadow-elevated"
               >
                 <Eye className="w-5 h-5" />
                 预览简历
-              </button>
-              
-              <button
-                onClick={handleDownload}
+              </a>
+
+              <a
+                href={resumePdf}
+                download="何亚鹏_简历.pdf"
                 className="hero-button"
               >
                 <span className="flex items-center gap-3">
                   <Download className="w-5 h-5" />
                   下载简历
                 </span>
-              </button>
+              </a>
             </div>
           </div>
 
