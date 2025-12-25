@@ -244,6 +244,8 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                 <img
                   src={category.images[0].src}
                   alt={category.title}
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
