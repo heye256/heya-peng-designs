@@ -149,7 +149,6 @@ const categories: Category[] = [
           { src: '/image/works/3d/xuanran/015.webp', alt: '场景渲染' },
           { src: '/image/works/3d/xuanran/016.webp', alt: '场景渲染' },
         ],
-        ],
       },
       {
         id: 'animation',
