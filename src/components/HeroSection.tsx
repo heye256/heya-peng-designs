@@ -21,13 +21,9 @@ const HeroSection = ({
         <div className="container mx-auto px-6">
           <div className="max-w-3xl">
             {/* 标题 */}
-            <h1 className="font-bold leading-tight mb-6">
-              <span className="block text-white text-5xl md:text-6xl lg:text-7xl">
-                你好，我是
-              </span>
-              <span className="block text-gradient-gold text-6xl md:text-7xl lg:text-8xl my-[27px]">
-                何亚鹏
-              </span>
+            <h1 className="font-bold leading-tight mb-6 text-5xl md:text-6xl lg:text-7xl">
+              <span className="text-white">你好，我是</span>
+              <span className="text-gradient-gold">何亚鹏</span>
             </h1>
 
             {/* AI 技术亮点 */}
