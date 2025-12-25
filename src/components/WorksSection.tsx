@@ -27,7 +27,6 @@ const categories: Category[] = [
     description: '专注于游戏界面设计，打造沉浸式用户体验。从概念设计到最终实现，每一个像素都经过精心打磨，确保视觉与功能的完美融合。',
     tools: ['Figma', 'Photoshop', 'After Effects', 'Unity'],
     images: [
-      { src: '/image/works/youxi/000.webp', alt: '游戏场景' },
       { src: '/image/works/youxi/001.webp', alt: '游戏场景' },
       { src: '/image/works/youxi/002.webp', alt: '游戏元素' },
       { src: '/image/works/youxi/003.webp', alt: '界面设计' },
@@ -47,7 +46,6 @@ const categories: Category[] = [
     description: '数字绘画与插画创作，融合传统技法与现代数字工具，创造富有表现力的视觉作品。',
     tools: ['Procreate', 'Photoshop', 'Clip Studio Paint', 'Wacom'],
     images: [
-      { src: '/image/works/huihua.webp', alt: '数字绘画作品' },
       { src: '/image/works/huihua/002.webp' },
       { src: '/image/works/huihua/003.webp', alt: '概念艺术' },
       { src: '/image/works/huihua/004.webp', alt: '传统绘画' },
