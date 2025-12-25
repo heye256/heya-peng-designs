@@ -1,4 +1,4 @@
-import { Download, Eye, FileText } from 'lucide-react';
+import { Download, Eye, FileText, X } from 'lucide-react';
 import { useState } from 'react';
 
 interface ResumeSectionProps {
@@ -8,14 +8,12 @@ interface ResumeSectionProps {
 const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
-  // Sample resume image (you can replace with actual resume)
-  const resumeImage = 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?w=800&q=80';
+  const resumePdf = '/resume.pdf';
 
   const handleDownload = () => {
-    // Create a link to download the resume
     const link = document.createElement('a');
-    link.href = resumeImage;
-    link.download = '何亚鹏_简历.png';
+    link.href = resumePdf;
+    link.download = '何亚鹏_简历.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -43,12 +41,11 @@ const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
 
           {/* Resume Preview Card */}
           <div className="bg-gradient-card rounded-2xl p-8 shadow-card mb-12">
-            <div className="aspect-[3/4] max-h-[500px] rounded-xl overflow-hidden mb-8 mx-auto max-w-md">
-              <img
-                src={resumeImage}
-                alt="简历预览"
-                className="w-full h-full object-cover"
-              />
+            <div className="aspect-[3/4] max-h-[500px] rounded-xl overflow-hidden mb-8 mx-auto max-w-md bg-muted/20 flex items-center justify-center">
+              <div className="text-center p-8">
+                <FileText className="w-24 h-24 text-primary/60 mx-auto mb-4" />
+                <p className="text-muted-foreground">PDF 简历</p>
+              </div>
             </div>
 
             {/* Action Buttons */}
@@ -87,25 +84,27 @@ const ResumeSection = ({ sectionRef }: ResumeSectionProps) => {
         </div>
       </div>
 
-      {/* Preview Modal */}
+      {/* PDF Preview Modal */}
       {isPreviewOpen && (
         <div 
-          className="fixed inset-0 z-50 bg-background/98 flex items-center justify-center p-6"
+          className="fixed inset-0 z-50 bg-background/98 flex items-center justify-center p-4"
           onClick={() => setIsPreviewOpen(false)}
         >
-          <div className="relative max-w-4xl max-h-[90vh] overflow-auto">
-            <img
-              src={resumeImage}
-              alt="简历"
-              className="w-full h-auto rounded-xl shadow-card"
-              onClick={(e) => e.stopPropagation()}
+          <div 
+            className="relative w-full max-w-5xl h-[90vh] bg-card rounded-xl overflow-hidden shadow-card"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <iframe
+              src={resumePdf}
+              className="w-full h-full"
+              title="简历预览"
             />
           </div>
           <button
             onClick={() => setIsPreviewOpen(false)}
             className="absolute top-6 right-6 p-3 rounded-full bg-card hover:bg-destructive/20 text-foreground hover:text-destructive transition-all"
           >
-            ✕
+            <X className="w-6 h-6" />
           </button>
         </div>
       )}
