@@ -62,15 +62,43 @@
 @layer base {
   * {
     @apply border-border;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
   }
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* 兼容微信等APP内置浏览器 */
+  img, video {
+    max-width: 100%;
+    height: auto;
+    -webkit-user-drag: none;
+  }
+
+  /* 修复iOS下的点击延迟 */
+  a, button {
+    touch-action: manipulation;
+  }
+
+  /* 兼容flex布局 */
+  .flex {
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: flex;
   }
 }
 
