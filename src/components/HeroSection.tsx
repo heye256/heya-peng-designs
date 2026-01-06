@@ -8,7 +8,20 @@ const HeroSection = ({
   return <section className="relative min-h-screen flex items-center overflow-hidden">
       {/* Video Background */}
       <div className="absolute inset-0 z-0">
-        <video autoPlay muted loop playsInline className="w-full h-full object-cover">
+        {/* 微信兼容：添加 webkit-playsinline, x5-video-player-type, x5-video-player-fullscreen */}
+        <video 
+          autoPlay 
+          muted 
+          loop 
+          playsInline
+          // @ts-ignore - 微信/QQ浏览器专用属性
+          webkit-playsinline="true"
+          x5-video-player-type="h5"
+          x5-video-player-fullscreen="true"
+          x5-video-orientation="portrait"
+          className="w-full h-full object-cover"
+          style={{ objectFit: 'cover' }}
+        >
           <source src="/videos/hero-bg.mp4" type="video/mp4" />
         </video>
 
