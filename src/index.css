@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap');
-
 @layer base {
   :root {
     --background: 240 10% 4%;
@@ -46,8 +44,8 @@
     --shadow-card: 0 20px 60px hsl(0, 0%, 0%, 0.4);
     --shadow-elevated: 0 8px 32px hsl(0, 0%, 0%, 0.3);
 
-    --font-display: 'Noto Sans SC', sans-serif;
-    --font-body: 'Noto Sans SC', sans-serif;
+    --font-display: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
 
     --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
