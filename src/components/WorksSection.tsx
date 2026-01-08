@@ -28,6 +28,7 @@ const categories: Category[] = [
     tools: ['Figma', 'Photoshop', 'After Effects', 'Unity'],
     images: [
       { src: '/image/works/youxi/001.webp', alt: '游戏场景' },
+      { src: '/image/works/youxi/011.png', alt: '界面设计' },
       { src: '/image/works/youxi/002.webp', alt: '游戏元素' },
       { src: '/image/works/youxi/003.webp', alt: '界面设计' },
       { src: '/image/works/youxi/004.webp', alt: '界面设计' },
@@ -37,6 +38,7 @@ const categories: Category[] = [
       { src: '/image/works/youxi/008.webp', alt: '界面设计' },
       { src: '/image/works/youxi/009.webp', alt: '界面设计' },
       { src: '/image/works/youxi/010.webp', alt: '界面设计' },
+     
     ],
   },
   {
