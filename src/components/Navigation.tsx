@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Download } from 'lucide-react';
+import { exportToPPT } from '@/lib/exportPPT';
 
 interface NavigationProps {
   onNavigate: (section: string) => void;
@@ -53,10 +54,18 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
           </button>
 
           <button
-            onClick={() => handleNavigate('practice')}
+            onClick={() => handleNavigate('contact')}
             className="text-white underline underline-offset-4 hover:text-primary transition text-sm lg:text-base"
           >
             联系方式
+          </button>
+
+          <button
+            onClick={exportToPPT}
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition text-sm lg:text-base font-medium"
+          >
+            <Download className="w-4 h-4" />
+            下载PPT
           </button>
         </div>
 
@@ -89,10 +98,21 @@ const Navigation = ({ onNavigate }: NavigationProps) => {
             </button>
 
             <button
-              onClick={() => handleNavigate('practice')}
+              onClick={() => handleNavigate('contact')}
               className="text-white text-left py-3 px-4 rounded-lg hover:bg-white/10 transition"
             >
               联系方式
+            </button>
+
+            <button
+              onClick={() => {
+                exportToPPT();
+                setIsMobileMenuOpen(false);
+              }}
+              className="flex items-center gap-2 text-primary text-left py-3 px-4 rounded-lg hover:bg-white/10 transition"
+            >
+              <Download className="w-5 h-5" />
+              下载PPT作品集
             </button>
           </div>
         </div>
