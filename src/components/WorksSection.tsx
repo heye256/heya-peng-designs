@@ -29,6 +29,7 @@ const categories: Category[] = [
     images: [
       { src: '/image/works/youxi/000.webp', alt: '游戏场景' },
       { src: '/image/works/youxi/012.webp', alt: '游戏场景' },
+      { src: '/image/works/youxi/013.webp', alt: '游戏场景' },
       { src: '/image/works/youxi/011.png', alt: '界面设计' },
       { src: '/image/works/youxi/002.webp', alt: '游戏元素' },
       { src: '/image/works/youxi/003.webp', alt: '界面设计' },
