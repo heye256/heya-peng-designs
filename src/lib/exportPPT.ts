@@ -1,9 +1,12 @@
 import PptxGenJS from 'pptxgenjs';
 
 const PRIMARY_COLOR = 'D4A853';
+const PRIMARY_DARK = 'B8923E';
 const BG_COLOR = '0A0A0B';
+const BG_DARK = '050506';
 const TEXT_COLOR = 'FFFFFF';
 const MUTED_COLOR = 'A1A1AA';
+const ACCENT_COLOR = '2A2A2D';
 
 // 取消控制器
 let abortController: AbortController | null = null;
@@ -21,26 +24,30 @@ const createProgressUI = () => {
     position: fixed;
     bottom: 24px;
     right: 24px;
-    background: #1a1a1b;
-    border-radius: 12px;
-    padding: 16px 20px;
-    border: 1px solid #333;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    background: linear-gradient(135deg, #1a1a1b 0%, #0f0f10 100%);
+    border-radius: 16px;
+    padding: 20px 24px;
+    border: 1px solid #D4A853;
+    box-shadow: 0 20px 60px rgba(212, 168, 83, 0.15), 0 0 40px rgba(0, 0, 0, 0.5);
     z-index: 99999;
-    min-width: 280px;
-    max-width: 320px;
-    animation: slideIn 0.3s ease;
+    min-width: 300px;
+    max-width: 340px;
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   `;
 
   const style = document.createElement('style');
   style.textContent = `
     @keyframes slideIn {
-      from { transform: translateX(100%); opacity: 0; }
+      from { transform: translateX(120%); opacity: 0; }
       to { transform: translateX(0); opacity: 1; }
     }
     @keyframes slideOut {
       from { transform: translateX(0); opacity: 1; }
-      to { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(120%); opacity: 0; }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
     }
   `;
   document.head.appendChild(style);
@@ -50,37 +57,40 @@ const createProgressUI = () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 12px;
+    margin-bottom: 16px;
   `;
 
   const title = document.createElement('div');
   title.style.cssText = `
     color: #D4A853;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
   `;
-  title.textContent = '正在生成PPT';
+  title.textContent = '✨ 正在生成PPT';
 
   const cancelBtn = document.createElement('button');
   cancelBtn.id = 'ppt-cancel-btn';
   cancelBtn.style.cssText = `
     background: transparent;
-    border: 1px solid #555;
+    border: 1px solid rgba(212, 168, 83, 0.3);
     color: #a1a1aa;
-    padding: 4px 12px;
-    border-radius: 6px;
+    padding: 6px 14px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 12px;
-    transition: all 0.2s;
+    transition: all 0.3s;
   `;
   cancelBtn.textContent = '取消';
   cancelBtn.onmouseenter = () => {
     cancelBtn.style.borderColor = '#D4A853';
     cancelBtn.style.color = '#D4A853';
+    cancelBtn.style.background = 'rgba(212, 168, 83, 0.1)';
   };
   cancelBtn.onmouseleave = () => {
-    cancelBtn.style.borderColor = '#555';
+    cancelBtn.style.borderColor = 'rgba(212, 168, 83, 0.3)';
     cancelBtn.style.color = '#a1a1aa';
+    cancelBtn.style.background = 'transparent';
   };
   cancelBtn.onclick = () => {
     if (abortController) {
@@ -94,11 +104,11 @@ const createProgressUI = () => {
   const progressBar = document.createElement('div');
   progressBar.style.cssText = `
     width: 100%;
-    height: 6px;
-    background: #333;
-    border-radius: 3px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   `;
 
   const progressFill = document.createElement('div');
@@ -106,9 +116,10 @@ const createProgressUI = () => {
   progressFill.style.cssText = `
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #D4A853, #f0d78c);
-    border-radius: 3px;
-    transition: width 0.2s ease;
+    background: linear-gradient(90deg, #B8923E, #D4A853, #f0d78c);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 10px rgba(212, 168, 83, 0.5);
   `;
   progressBar.appendChild(progressFill);
 
@@ -130,8 +141,8 @@ const createProgressUI = () => {
   const percentText = document.createElement('div');
   percentText.id = 'ppt-progress-percent';
   percentText.style.cssText = `
-    color: #fff;
-    font-size: 14px;
+    color: #D4A853;
+    font-size: 16px;
     font-weight: bold;
   `;
   percentText.textContent = '0%';
@@ -157,15 +168,20 @@ const createProgressUI = () => {
       const toastEl = document.getElementById('ppt-progress-toast');
       const titleEl = toastEl?.querySelector('div > div:first-child') as HTMLElement;
       const cancelBtn = document.getElementById('ppt-cancel-btn');
+      const fill = document.getElementById('ppt-progress-fill');
       if (titleEl) {
         titleEl.textContent = '✓ ' + message;
         titleEl.style.color = '#4ade80';
       }
+      if (fill) {
+        fill.style.background = 'linear-gradient(90deg, #22c55e, #4ade80)';
+      }
       if (cancelBtn) cancelBtn.style.display = 'none';
+      if (toastEl) toastEl.style.borderColor = '#4ade80';
       setTimeout(() => {
         if (toastEl) {
-          toastEl.style.animation = 'slideOut 0.3s ease forwards';
-          setTimeout(() => toastEl.remove(), 300);
+          toastEl.style.animation = 'slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+          setTimeout(() => toastEl.remove(), 400);
         }
       }, 2000);
     },
@@ -173,23 +189,28 @@ const createProgressUI = () => {
       const toastEl = document.getElementById('ppt-progress-toast');
       const titleEl = toastEl?.querySelector('div > div:first-child') as HTMLElement;
       const cancelBtn = document.getElementById('ppt-cancel-btn');
+      const fill = document.getElementById('ppt-progress-fill');
       if (titleEl) {
         titleEl.textContent = '✗ ' + message;
         titleEl.style.color = '#f87171';
       }
+      if (fill) {
+        fill.style.background = 'linear-gradient(90deg, #dc2626, #f87171)';
+      }
       if (cancelBtn) cancelBtn.style.display = 'none';
+      if (toastEl) toastEl.style.borderColor = '#f87171';
       setTimeout(() => {
         if (toastEl) {
-          toastEl.style.animation = 'slideOut 0.3s ease forwards';
-          setTimeout(() => toastEl.remove(), 300);
+          toastEl.style.animation = 'slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+          setTimeout(() => toastEl.remove(), 400);
         }
       }, 2500);
     },
     remove: () => {
       const el = document.getElementById('ppt-progress-toast');
       if (el) {
-        el.style.animation = 'slideOut 0.3s ease forwards';
-        setTimeout(() => el.remove(), 300);
+        el.style.animation = 'slideOut 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+        setTimeout(() => el.remove(), 400);
       }
     },
     isAborted: () => abortController?.signal.aborted ?? false,
@@ -202,7 +223,6 @@ const imageToBase64WithSize = (url: string, quality = 0.5): Promise<{ data: stri
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      // 限制最大尺寸以减小文件大小
       const maxDim = 1400;
       let width = img.width;
       let height = img.height;
@@ -233,7 +253,7 @@ const imageToBase64WithSize = (url: string, quality = 0.5): Promise<{ data: stri
   });
 };
 
-// 视频转换为base64（压缩后嵌入）
+// 视频转换为base64
 const videoToBase64 = (url: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     fetch(url)
@@ -248,8 +268,8 @@ const videoToBase64 = (url: string): Promise<string> => {
   });
 };
 
-// 获取视频缩略图（用于封面）
-const getVideoThumbnail = (url: string, quality = 0.6): Promise<{ data: string; width: number; height: number }> => {
+// 获取视频首帧缩略图（用于封面）
+const getVideoThumbnail = (url: string, quality = 0.7): Promise<{ data: string; width: number; height: number }> => {
   return new Promise((resolve, reject) => {
     const video = document.createElement('video');
     video.crossOrigin = 'anonymous';
@@ -257,7 +277,8 @@ const getVideoThumbnail = (url: string, quality = 0.6): Promise<{ data: string; 
     video.preload = 'metadata';
     
     video.onloadeddata = () => {
-      video.currentTime = 1;
+      // 跳到第一帧（0.1秒确保有画面）
+      video.currentTime = 0.1;
     };
     
     video.onseeked = () => {
@@ -459,6 +480,53 @@ interface ImageData {
   height: number;
 }
 
+// 添加装饰性元素到幻灯片
+const addDecorativeElements = (slide: PptxGenJS.Slide, style: 'corner' | 'line' | 'dots' = 'corner') => {
+  if (style === 'corner') {
+    // 左上角装饰线
+    slide.addShape('line', {
+      x: 0.3, y: 0.3, w: 0.8, h: 0,
+      line: { color: PRIMARY_COLOR, width: 2, transparency: 40 },
+    });
+    slide.addShape('line', {
+      x: 0.3, y: 0.3, w: 0, h: 0.5,
+      line: { color: PRIMARY_COLOR, width: 2, transparency: 40 },
+    });
+    // 右下角装饰线
+    slide.addShape('line', {
+      x: 12.23, y: 7.2, w: 0.8, h: 0,
+      line: { color: PRIMARY_COLOR, width: 2, transparency: 40 },
+    });
+    slide.addShape('line', {
+      x: 13.03, y: 6.7, w: 0, h: 0.5,
+      line: { color: PRIMARY_COLOR, width: 2, transparency: 40 },
+    });
+  } else if (style === 'line') {
+    // 顶部装饰线
+    slide.addShape('line', {
+      x: 0.3, y: 0.08, w: 2, h: 0,
+      line: { color: PRIMARY_COLOR, width: 3 },
+    });
+  } else if (style === 'dots') {
+    // 装饰点阵
+    for (let i = 0; i < 3; i++) {
+      slide.addShape('ellipse', {
+        x: 12.6 + i * 0.18, y: 0.35, w: 0.08, h: 0.08,
+        fill: { color: PRIMARY_COLOR, transparency: 50 - i * 15 },
+        line: { color: PRIMARY_COLOR, width: 0 },
+      });
+    }
+  }
+};
+
+// 添加页码
+const addPageNumber = (slide: PptxGenJS.Slide, current: number, total: number) => {
+  slide.addText(`${current} / ${total}`, {
+    x: 12.3, y: 7.1, w: 0.8, h: 0.3,
+    fontSize: 9, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'right',
+  });
+};
+
 export const exportToPPT = async () => {
   const progressUI = createProgressUI();
 
@@ -502,7 +570,7 @@ export const exportToPPT = async () => {
       }
     };
 
-    // 加载图片（优化压缩）
+    // 加载图片
     const loadImage = async (path: string) => {
       checkAbort();
       if (loadedImages.has(path)) return;
@@ -518,15 +586,15 @@ export const exportToPPT = async () => {
       progressUI.update(progress, `加载资源 ${loadedCount}/${totalResources}`);
     };
 
-    // 加载视频（完整嵌入）
+    // 加载视频（完整嵌入 + 首帧封面）
     const loadVideo = async (path: string) => {
       checkAbort();
       try {
         const url = `${baseUrl}${path}`;
         const data = await videoToBase64(url);
         loadedVideos.set(path, data);
-        // 同时获取缩略图用于封面
-        const thumbnail = await getVideoThumbnail(url, 0.6);
+        // 获取首帧缩略图用于封面
+        const thumbnail = await getVideoThumbnail(url, 0.7);
         loadedImages.set(path, thumbnail);
       } catch (e) {
         console.warn(`视频加载失败: ${path}`);
@@ -536,7 +604,7 @@ export const exportToPPT = async () => {
       progressUI.update(progress, `加载资源 ${loadedCount}/${totalResources}`);
     };
 
-    // 并行加载（增大批次加快速度）
+    // 并行加载
     const batchSize = 10;
     for (let i = 0; i < allImagePaths.length; i += batchSize) {
       checkAbort();
@@ -544,16 +612,30 @@ export const exportToPPT = async () => {
       await Promise.all(batch.map(loadImage));
     }
     
-    // 视频逐个加载（避免内存问题）
+    // 视频逐个加载
     for (const videoPath of allVideoPaths) {
       checkAbort();
       await loadVideo(videoPath);
     }
 
+    // 计算总页数
+    let totalPages = 1; // 封面
+    totalPages += allWorksData.gameUI.images.length; // 游戏UI
+    totalPages += Math.ceil(allWorksData.painting.images.length / 6); // 绘画
+    totalPages += Math.ceil(allWorksData.threeD.subCategories.modeling.images.length / 6);
+    totalPages += Math.ceil(allWorksData.threeD.subCategories.texturing.images.length / 6);
+    totalPages += Math.ceil(allWorksData.threeD.subCategories.rendering.images.length / 6);
+    totalPages += allWorksData.threeD.subCategories.animation.videos.length; // 动画
+    totalPages += Math.ceil(allWorksData.graphic.images.length / 6); // 平面
+    totalPages += 1; // 联系方式
+
+    let currentPage = 0;
+
     checkAbort();
     progressUI.update(55, '创建封面...');
 
-    // === 第1页：封面（完整文字） ===
+    // === 第1页：封面 ===
+    currentPage++;
     const slide1 = pptx.addSlide();
     slide1.background = { color: BG_COLOR };
     
@@ -564,26 +646,39 @@ export const exportToPPT = async () => {
         x: 0, y: 0, w: 13.33, h: 7.5,
         sizing: { type: 'cover', w: 13.33, h: 7.5 },
       });
+      // 渐变遮罩
       slide1.addShape('rect', {
         x: 0, y: 0, w: 13.33, h: 7.5,
-        fill: { color: BG_COLOR, transparency: 40 },
+        fill: { color: BG_COLOR, transparency: 35 },
       });
     }
     
-    // 封面文字 - 完整显示
+    // 左侧装饰条
+    slide1.addShape('rect', {
+      x: 0, y: 0, w: 0.08, h: 7.5,
+      fill: { color: PRIMARY_COLOR },
+    });
+    
+    // 封面文字
     slide1.addText('你好，我是', {
-      x: 0.6, y: 1.8, w: 12, h: 0.7,
-      fontSize: 28, color: TEXT_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.8, y: 1.6, w: 12, h: 0.6,
+      fontSize: 26, color: TEXT_COLOR, fontFace: 'Microsoft YaHei',
     });
     
     slide1.addText('何亚鹏', {
-      x: 0.6, y: 2.4, w: 12, h: 1.2,
-      fontSize: 60, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.8, y: 2.1, w: 12, h: 1.4,
+      fontSize: 72, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+    });
+    
+    // 装饰线
+    slide1.addShape('line', {
+      x: 0.8, y: 3.6, w: 3, h: 0,
+      line: { color: PRIMARY_COLOR, width: 3 },
     });
     
     slide1.addText('能够熟练的使用 AI 最新技术高效的完成工作内容', {
-      x: 0.6, y: 3.7, w: 12, h: 0.5,
-      fontSize: 18, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.8, y: 3.9, w: 12, h: 0.5,
+      fontSize: 16, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
     });
     
     slide1.addText([
@@ -593,38 +688,91 @@ export const exportToPPT = async () => {
       { text: '3D美术', options: { color: PRIMARY_COLOR, bold: true } },
       { text: '。', options: { color: TEXT_COLOR } },
     ], {
-      x: 0.6, y: 4.4, w: 12, h: 0.5,
-      fontSize: 16, fontFace: 'Microsoft YaHei',
+      x: 0.8, y: 4.5, w: 12, h: 0.5,
+      fontSize: 15, fontFace: 'Microsoft YaHei',
     });
     
     slide1.addText('熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。', {
-      x: 0.6, y: 5.0, w: 11, h: 0.8,
-      fontSize: 13, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.8, y: 5.1, w: 10, h: 0.8,
+      fontSize: 12, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+    });
+    
+    // 联系信息条
+    slide1.addShape('rect', {
+      x: 0, y: 6.6, w: 13.33, h: 0.9,
+      fill: { color: ACCENT_COLOR, transparency: 30 },
+    });
+    slide1.addText(`📧 ${contactInfo.email}   |   💬 ${contactInfo.wechat}   |   📱 ${contactInfo.phone}`, {
+      x: 0.8, y: 6.75, w: 12, h: 0.5,
+      fontSize: 11, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
     });
 
-    // 辅助函数：单图页面（游戏UI用）
+    addPageNumber(slide1, currentPage, totalPages);
+
+    // 辅助函数：分类标题页
+    const addCategoryTitleSlide = (title: string, description: string, iconEmoji: string) => {
+      currentPage++;
+      const slide = pptx.addSlide();
+      slide.background = { color: BG_COLOR };
+      
+      // 大装饰圆
+      slide.addShape('ellipse', {
+        x: 9.5, y: -2, w: 6, h: 6,
+        fill: { color: PRIMARY_COLOR, transparency: 92 },
+        line: { color: PRIMARY_COLOR, width: 1, transparency: 70 },
+      });
+      
+      addDecorativeElements(slide, 'corner');
+      
+      slide.addText(iconEmoji, {
+        x: 1, y: 2.5, w: 1.5, h: 1.2,
+        fontSize: 48,
+      });
+      
+      slide.addText(title, {
+        x: 1, y: 3.8, w: 10, h: 1,
+        fontSize: 42, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      });
+      
+      slide.addShape('line', {
+        x: 1, y: 4.9, w: 2.5, h: 0,
+        line: { color: PRIMARY_COLOR, width: 4 },
+      });
+      
+      slide.addText(description, {
+        x: 1, y: 5.2, w: 10, h: 0.6,
+        fontSize: 16, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+      });
+      
+      addPageNumber(slide, currentPage, totalPages);
+    };
+
+    // 辅助函数：单图页面
     const addSingleImageSlide = (title: string, imgPath: string, subtitle?: string) => {
       const imgData = loadedImages.get(imgPath);
       if (!imgData) return;
 
+      currentPage++;
       const slide = pptx.addSlide();
       slide.background = { color: BG_COLOR };
 
-      // 简洁标题
+      addDecorativeElements(slide, 'line');
+
+      // 标题区域
       slide.addText(title, {
-        x: 0.3, y: 0.15, w: 12, h: 0.4,
+        x: 0.3, y: 0.2, w: 10, h: 0.4,
         fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
       });
 
       if (subtitle) {
         slide.addText(subtitle, {
-          x: 0.3, y: 0.5, w: 12, h: 0.25,
+          x: 0.3, y: 0.55, w: 10, h: 0.25,
           fontSize: 10, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
         });
       }
 
-      const startY = subtitle ? 0.8 : 0.6;
-      const maxW = 12.7, maxH = 7.5 - startY - 0.15;
+      const startY = subtitle ? 0.9 : 0.7;
+      const maxW = 12.7, maxH = 7.5 - startY - 0.3;
       const imgRatio = imgData.width / imgData.height;
       const areaRatio = maxW / maxH;
 
@@ -632,43 +780,56 @@ export const exportToPPT = async () => {
       if (imgRatio > areaRatio) { w = maxW; h = maxW / imgRatio; }
       else { h = maxH; w = maxH * imgRatio; }
 
+      // 图片阴影背景
+      slide.addShape('rect', {
+        x: (13.33 - w) / 2 + 0.1,
+        y: startY + (maxH - h) / 2 + 0.1,
+        w, h,
+        fill: { color: '000000', transparency: 60 },
+        shadow: { type: 'outer', blur: 15, offset: 3, angle: 135, color: '000000', opacity: 0.4 },
+      });
+
       slide.addImage({
         data: imgData.data,
         x: (13.33 - w) / 2,
         y: startY + (maxH - h) / 2,
         w, h,
       });
+
+      addPageNumber(slide, currentPage, totalPages);
     };
 
-    // 辅助函数：多图页面（优化排版）
+    // 辅助函数：多图页面
     const addMultiImageSlide = (title: string, images: string[], startIndex: number, count: number, subtitle?: string) => {
-      const slide = pptx.addSlide();
-      slide.background = { color: BG_COLOR };
-
-      slide.addText(title, {
-        x: 0.3, y: 0.1, w: 12, h: 0.35,
-        fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
-      });
-
-      if (subtitle) {
-        slide.addText(subtitle, {
-          x: 0.3, y: 0.4, w: 12, h: 0.2,
-          fontSize: 9, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
-        });
-      }
-
-      const startY = subtitle ? 0.65 : 0.5;
-      const areaH = 7.5 - startY - 0.1;
-      const areaW = 12.9;
-      const padding = 0.1;
-
       const validImages = images.slice(startIndex, startIndex + count)
         .map(path => ({ path, data: loadedImages.get(path) }))
         .filter((img): img is { path: string; data: ImageData } => !!img.data);
 
       if (validImages.length === 0) return;
 
-      // 优化布局
+      currentPage++;
+      const slide = pptx.addSlide();
+      slide.background = { color: BG_COLOR };
+
+      addDecorativeElements(slide, 'dots');
+
+      slide.addText(title, {
+        x: 0.3, y: 0.15, w: 10, h: 0.35,
+        fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      });
+
+      if (subtitle) {
+        slide.addText(subtitle, {
+          x: 0.3, y: 0.45, w: 10, h: 0.2,
+          fontSize: 9, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+        });
+      }
+
+      const startY = subtitle ? 0.7 : 0.55;
+      const areaH = 7.5 - startY - 0.25;
+      const areaW = 12.9;
+      const padding = 0.12;
+
       const layouts: { [key: number]: { cols: number; rows: number } } = {
         1: { cols: 1, rows: 1 }, 2: { cols: 2, rows: 1 }, 3: { cols: 3, rows: 1 },
         4: { cols: 2, rows: 2 }, 5: { cols: 3, rows: 2 }, 6: { cols: 3, rows: 2 },
@@ -691,6 +852,15 @@ export const exportToPPT = async () => {
         const cellX = 0.2 + padding + col * (cellW + padding);
         const cellY = startY + padding + row * (cellH + padding);
 
+        // 微妙的边框
+        slide.addShape('rect', {
+          x: cellX + (cellW - w) / 2 - 0.02,
+          y: cellY + (cellH - h) / 2 - 0.02,
+          w: w + 0.04, h: h + 0.04,
+          fill: { color: ACCENT_COLOR },
+          line: { color: PRIMARY_COLOR, width: 0.5, transparency: 70 },
+        });
+
         slide.addImage({
           data: img.data.data,
           x: cellX + (cellW - w) / 2,
@@ -698,31 +868,36 @@ export const exportToPPT = async () => {
           w, h,
         });
       });
+
+      addPageNumber(slide, currentPage, totalPages);
     };
 
-    // 辅助函数：视频页面（嵌入真实视频）
+    // 辅助函数：视频页面（带首帧封面）
     const addVideoSlide = (title: string, videoPath: string, subtitle?: string) => {
       const videoData = loadedVideos.get(videoPath);
       const thumbnail = loadedImages.get(videoPath);
       if (!videoData || !thumbnail) return;
 
+      currentPage++;
       const slide = pptx.addSlide();
       slide.background = { color: BG_COLOR };
 
+      addDecorativeElements(slide, 'line');
+
       slide.addText(title, {
-        x: 0.3, y: 0.15, w: 12, h: 0.4,
+        x: 0.3, y: 0.2, w: 10, h: 0.4,
         fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
       });
 
       if (subtitle) {
         slide.addText(subtitle, {
-          x: 0.3, y: 0.5, w: 12, h: 0.25,
+          x: 0.3, y: 0.55, w: 10, h: 0.25,
           fontSize: 10, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
         });
       }
 
-      const startY = subtitle ? 0.8 : 0.6;
-      const maxW = 12, maxH = 6.5;
+      const startY = subtitle ? 0.9 : 0.7;
+      const maxW = 12, maxH = 6.3;
       const videoRatio = thumbnail.width / thumbnail.height;
       const areaRatio = maxW / maxH;
 
@@ -730,20 +905,38 @@ export const exportToPPT = async () => {
       if (videoRatio > areaRatio) { w = maxW; h = maxW / videoRatio; }
       else { h = maxH; w = maxH * videoRatio; }
 
-      // 嵌入视频
+      const x = (13.33 - w) / 2;
+      const y = startY + (maxH - h) / 2;
+
+      // 视频封面框
+      slide.addShape('rect', {
+        x: x - 0.05, y: y - 0.05, w: w + 0.1, h: h + 0.1,
+        fill: { color: ACCENT_COLOR },
+        line: { color: PRIMARY_COLOR, width: 1, transparency: 50 },
+      });
+
+      // 嵌入视频（带封面）
       slide.addMedia({
         type: 'video',
         data: videoData,
-        x: (13.33 - w) / 2,
-        y: startY + (maxH - h) / 2,
-        w, h,
+        x, y, w, h,
+        cover: thumbnail.data, // 首帧作为封面
       });
+
+      // 播放提示
+      slide.addText('▶ 点击播放', {
+        x: x, y: y + h - 0.4, w: w, h: 0.35,
+        fontSize: 10, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei', align: 'center',
+        fill: { color: BG_COLOR, transparency: 40 },
+      });
+
+      addPageNumber(slide, currentPage, totalPages);
     };
 
     checkAbort();
     progressUI.update(60, '添加游戏UI...');
 
-    // === 游戏UI设计（每页一张）===
+    // === 游戏UI设计 ===
     allWorksData.gameUI.images.forEach((imgPath, idx) => {
       addSingleImageSlide(allWorksData.gameUI.title, imgPath, idx === 0 ? allWorksData.gameUI.description : undefined);
     });
@@ -751,7 +944,7 @@ export const exportToPPT = async () => {
     checkAbort();
     progressUI.update(68, '添加绘画作品...');
 
-    // === 绘画（每页6张）===
+    // === 绘画 ===
     for (let i = 0; i < allWorksData.painting.images.length; i += 6) {
       addMultiImageSlide(allWorksData.painting.title, allWorksData.painting.images, i, 6, i === 0 ? allWorksData.painting.description : undefined);
     }
@@ -763,23 +956,23 @@ export const exportToPPT = async () => {
     const { modeling, texturing, rendering, animation } = allWorksData.threeD.subCategories;
     
     for (let i = 0; i < modeling.images.length; i += 6) {
-      addMultiImageSlide(`${allWorksData.threeD.title} - ${modeling.title}`, modeling.images, i, 6, i === 0 ? allWorksData.threeD.description : undefined);
+      addMultiImageSlide(`${allWorksData.threeD.title} · ${modeling.title}`, modeling.images, i, 6, i === 0 ? allWorksData.threeD.description : undefined);
     }
     
     for (let i = 0; i < texturing.images.length; i += 6) {
-      addMultiImageSlide(`${allWorksData.threeD.title} - ${texturing.title}`, texturing.images, i, 6);
+      addMultiImageSlide(`${allWorksData.threeD.title} · ${texturing.title}`, texturing.images, i, 6);
     }
     
     for (let i = 0; i < rendering.images.length; i += 6) {
-      addMultiImageSlide(`${allWorksData.threeD.title} - ${rendering.title}`, rendering.images, i, 6);
+      addMultiImageSlide(`${allWorksData.threeD.title} · ${rendering.title}`, rendering.images, i, 6);
     }
 
     checkAbort();
     progressUI.update(82, '添加动画视频...');
 
-    // === 动画视频（嵌入真实视频）===
+    // === 动画视频 ===
     animation.videos.forEach((videoPath, idx) => {
-      addVideoSlide(`${allWorksData.threeD.title} - ${animation.title}`, videoPath, idx === 0 ? '动画作品演示' : undefined);
+      addVideoSlide(`${allWorksData.threeD.title} · ${animation.title}`, videoPath, idx === 0 ? '动画作品演示 · 点击播放视频' : undefined);
     });
 
     checkAbort();
@@ -793,21 +986,47 @@ export const exportToPPT = async () => {
     checkAbort();
     progressUI.update(92, '添加联系方式...');
 
-    // === 联系方式 ===
+    // === 联系方式结尾页 ===
+    currentPage++;
     const slideContact = pptx.addSlide();
     slideContact.background = { color: BG_COLOR };
+    
+    // 大装饰圆
+    slideContact.addShape('ellipse', {
+      x: -2, y: 4, w: 5, h: 5,
+      fill: { color: PRIMARY_COLOR, transparency: 92 },
+      line: { color: PRIMARY_COLOR, width: 1, transparency: 70 },
+    });
+    
+    slideContact.addShape('ellipse', {
+      x: 11, y: -1, w: 4, h: 4,
+      fill: { color: PRIMARY_COLOR, transparency: 94 },
+      line: { color: PRIMARY_COLOR, width: 1, transparency: 80 },
+    });
+    
+    addDecorativeElements(slideContact, 'corner');
+    
+    slideContact.addText('THANK YOU', {
+      x: 0.5, y: 1.2, w: 12.33, h: 0.6,
+      fontSize: 14, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center', charSpacing: 15,
+    });
     
     slideContact.addText('联系方式', {
       x: 0.5, y: 1.8, w: 12.33, h: 1,
       fontSize: 48, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei', align: 'center',
     });
     
-    slideContact.addText('感谢您浏览我的作品集，期待与您合作', {
-      x: 0.5, y: 2.8, w: 12.33, h: 0.6,
-      fontSize: 18, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center',
+    slideContact.addShape('line', {
+      x: 5.5, y: 2.9, w: 2.33, h: 0,
+      line: { color: PRIMARY_COLOR, width: 3 },
     });
     
-    const cardY = 3.8, cardH = 1.8, cardW = 3.2, cardGap = 0.5;
+    slideContact.addText('感谢您浏览我的作品集，期待与您合作', {
+      x: 0.5, y: 3.1, w: 12.33, h: 0.5,
+      fontSize: 16, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center',
+    });
+    
+    const cardY = 4, cardH = 2, cardW = 3.4, cardGap = 0.5;
     const startX = (13.33 - cardW * 3 - cardGap * 2) / 2;
 
     [
@@ -816,20 +1035,41 @@ export const exportToPPT = async () => {
       { icon: '📱', label: '电话', value: contactInfo.phone },
     ].forEach((item, idx) => {
       const x = startX + (cardW + cardGap) * idx;
+      
+      // 卡片背景
       slideContact.addShape('rect', {
         x, y: cardY, w: cardW, h: cardH,
-        fill: { color: '1A1A1B' },
-        line: { color: '333333', width: 1 },
+        fill: { color: ACCENT_COLOR, transparency: 30 },
+        line: { color: PRIMARY_COLOR, width: 1, transparency: 60 },
+        shadow: { type: 'outer', blur: 10, offset: 2, angle: 135, color: '000000', opacity: 0.2 },
       });
-      slideContact.addText(item.icon, { x, y: cardY + 0.2, w: cardW, h: 0.5, fontSize: 24, align: 'center' });
-      slideContact.addText(item.label, { x, y: cardY + 0.7, w: cardW, h: 0.3, fontSize: 11, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center' });
-      slideContact.addText(item.value, { x, y: cardY + 1.1, w: cardW, h: 0.4, fontSize: 13, bold: true, color: TEXT_COLOR, fontFace: 'Microsoft YaHei', align: 'center' });
+      
+      // 顶部装饰线
+      slideContact.addShape('rect', {
+        x, y: cardY, w: cardW, h: 0.05,
+        fill: { color: PRIMARY_COLOR },
+      });
+      
+      slideContact.addText(item.icon, { 
+        x, y: cardY + 0.3, w: cardW, h: 0.6, 
+        fontSize: 28, align: 'center' 
+      });
+      slideContact.addText(item.label, { 
+        x, y: cardY + 0.95, w: cardW, h: 0.3, 
+        fontSize: 11, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center' 
+      });
+      slideContact.addText(item.value, { 
+        x, y: cardY + 1.3, w: cardW, h: 0.5, 
+        fontSize: 13, bold: true, color: TEXT_COLOR, fontFace: 'Microsoft YaHei', align: 'center' 
+      });
     });
 
     slideContact.addText('© 2024 何亚鹏 · 作品集', {
-      x: 0.5, y: 6.5, w: 12.33, h: 0.4,
-      fontSize: 12, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center',
+      x: 0.5, y: 6.7, w: 12.33, h: 0.4,
+      fontSize: 11, color: MUTED_COLOR, fontFace: 'Microsoft YaHei', align: 'center',
     });
+
+    addPageNumber(slideContact, currentPage, totalPages);
 
     checkAbort();
     progressUI.update(96, '生成文件...');
