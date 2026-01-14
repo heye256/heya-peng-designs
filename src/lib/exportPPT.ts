@@ -196,14 +196,14 @@ const createProgressUI = () => {
   };
 };
 
-// 优化：压缩图片质量
-const imageToBase64WithSize = (url: string, quality = 0.6): Promise<{ data: string; width: number; height: number }> => {
+// 优化：压缩图片质量，限制尺寸
+const imageToBase64WithSize = (url: string, quality = 0.5): Promise<{ data: string; width: number; height: number }> => {
   return new Promise((resolve, reject) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
       // 限制最大尺寸以减小文件大小
-      const maxDim = 1600;
+      const maxDim = 1400;
       let width = img.width;
       let height = img.height;
       
@@ -233,8 +233,23 @@ const imageToBase64WithSize = (url: string, quality = 0.6): Promise<{ data: stri
   });
 };
 
-// 优化：获取视频缩略图而非完整视频（大幅减小文件）
-const getVideoThumbnail = (url: string, quality = 0.7): Promise<{ data: string; width: number; height: number }> => {
+// 视频转换为base64（压缩后嵌入）
+const videoToBase64 = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then(res => res.blob())
+      .then(blob => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+      })
+      .catch(reject);
+  });
+};
+
+// 获取视频缩略图（用于封面）
+const getVideoThumbnail = (url: string, quality = 0.6): Promise<{ data: string; width: number; height: number }> => {
   return new Promise((resolve, reject) => {
     const video = document.createElement('video');
     video.crossOrigin = 'anonymous';
@@ -246,7 +261,7 @@ const getVideoThumbnail = (url: string, quality = 0.7): Promise<{ data: string; 
     };
     
     video.onseeked = () => {
-      const maxDim = 1280;
+      const maxDim = 1400;
       let width = video.videoWidth;
       let height = video.videoHeight;
       
@@ -459,6 +474,7 @@ export const exportToPPT = async () => {
 
     const baseUrl = window.location.origin;
     const loadedImages: Map<string, ImageData> = new Map();
+    const loadedVideos: Map<string, string> = new Map();
 
     // 收集所有资源路径
     const allImagePaths: string[] = [];
@@ -492,7 +508,7 @@ export const exportToPPT = async () => {
       if (loadedImages.has(path)) return;
       try {
         const url = path.startsWith('http') ? path : `${baseUrl}${path}`;
-        const data = await imageToBase64WithSize(url, 0.6);
+        const data = await imageToBase64WithSize(url, 0.5);
         loadedImages.set(path, data);
       } catch (e) {
         console.warn(`图片加载失败: ${path}`);
@@ -502,15 +518,18 @@ export const exportToPPT = async () => {
       progressUI.update(progress, `加载资源 ${loadedCount}/${totalResources}`);
     };
 
-    // 加载视频缩略图（不嵌入原视频以减小文件）
-    const loadVideoThumbnail = async (path: string) => {
+    // 加载视频（完整嵌入）
+    const loadVideo = async (path: string) => {
       checkAbort();
       try {
         const url = `${baseUrl}${path}`;
-        const data = await getVideoThumbnail(url, 0.7);
-        loadedImages.set(path, data);
+        const data = await videoToBase64(url);
+        loadedVideos.set(path, data);
+        // 同时获取缩略图用于封面
+        const thumbnail = await getVideoThumbnail(url, 0.6);
+        loadedImages.set(path, thumbnail);
       } catch (e) {
-        console.warn(`视频缩略图加载失败: ${path}`);
+        console.warn(`视频加载失败: ${path}`);
       }
       loadedCount++;
       const progress = (loadedCount / totalResources) * 50;
@@ -518,23 +537,23 @@ export const exportToPPT = async () => {
     };
 
     // 并行加载（增大批次加快速度）
-    const batchSize = 8;
+    const batchSize = 10;
     for (let i = 0; i < allImagePaths.length; i += batchSize) {
       checkAbort();
       const batch = allImagePaths.slice(i, i + batchSize);
       await Promise.all(batch.map(loadImage));
     }
     
-    for (let i = 0; i < allVideoPaths.length; i += batchSize) {
+    // 视频逐个加载（避免内存问题）
+    for (const videoPath of allVideoPaths) {
       checkAbort();
-      const batch = allVideoPaths.slice(i, i + batchSize);
-      await Promise.all(batch.map(loadVideoThumbnail));
+      await loadVideo(videoPath);
     }
 
     checkAbort();
     progressUI.update(55, '创建封面...');
 
-    // === 第1页：封面 ===
+    // === 第1页：封面（完整文字） ===
     const slide1 = pptx.addSlide();
     slide1.background = { color: BG_COLOR };
     
@@ -547,31 +566,43 @@ export const exportToPPT = async () => {
       });
       slide1.addShape('rect', {
         x: 0, y: 0, w: 13.33, h: 7.5,
-        fill: { color: BG_COLOR, transparency: 50 },
+        fill: { color: BG_COLOR, transparency: 40 },
       });
     }
     
+    // 封面文字 - 完整显示
     slide1.addText('你好，我是', {
-      x: 0.5, y: 2.5, w: 12, h: 0.8,
-      fontSize: 32, color: TEXT_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.6, y: 1.8, w: 12, h: 0.7,
+      fontSize: 28, color: TEXT_COLOR, fontFace: 'Microsoft YaHei',
     });
     
     slide1.addText('何亚鹏', {
-      x: 0.5, y: 3.2, w: 12, h: 1.2,
-      fontSize: 64, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.6, y: 2.4, w: 12, h: 1.2,
+      fontSize: 60, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
     });
     
     slide1.addText('能够熟练的使用 AI 最新技术高效的完成工作内容', {
-      x: 0.5, y: 4.5, w: 12, h: 0.6,
-      fontSize: 20, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      x: 0.6, y: 3.7, w: 12, h: 0.5,
+      fontSize: 18, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
     });
     
-    slide1.addText('专注平面设计与3D美术', {
-      x: 0.5, y: 5.3, w: 10, h: 0.5,
-      fontSize: 14, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+    slide1.addText([
+      { text: '专注 ', options: { color: TEXT_COLOR } },
+      { text: '平面设计', options: { color: PRIMARY_COLOR, bold: true } },
+      { text: ' 与 ', options: { color: TEXT_COLOR } },
+      { text: '3D美术', options: { color: PRIMARY_COLOR, bold: true } },
+      { text: '。', options: { color: TEXT_COLOR } },
+    ], {
+      x: 0.6, y: 4.4, w: 12, h: 0.5,
+      fontSize: 16, fontFace: 'Microsoft YaHei',
+    });
+    
+    slide1.addText('熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke 等平面设计软件和三维动画制作软件。', {
+      x: 0.6, y: 5.0, w: 11, h: 0.8,
+      fontSize: 13, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
     });
 
-    // 辅助函数
+    // 辅助函数：单图页面（游戏UI用）
     const addSingleImageSlide = (title: string, imgPath: string, subtitle?: string) => {
       const imgData = loadedImages.get(imgPath);
       if (!imgData) return;
@@ -579,41 +610,10 @@ export const exportToPPT = async () => {
       const slide = pptx.addSlide();
       slide.background = { color: BG_COLOR };
 
-      slide.addText(title, {
-        x: 0.3, y: 0.2, w: 12, h: 0.5,
-        fontSize: 18, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
-      });
-
-      if (subtitle) {
-        slide.addText(subtitle, {
-          x: 0.3, y: 0.6, w: 12, h: 0.3,
-          fontSize: 12, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
-        });
-      }
-
-      const maxW = 12.5, maxH = 6.3;
-      const imgRatio = imgData.width / imgData.height;
-      const areaRatio = maxW / maxH;
-
-      let w: number, h: number;
-      if (imgRatio > areaRatio) { w = maxW; h = maxW / imgRatio; }
-      else { h = maxH; w = maxH * imgRatio; }
-
-      slide.addImage({
-        data: imgData.data,
-        x: (13.33 - w) / 2,
-        y: 0.9 + (maxH - h) / 2,
-        w, h,
-      });
-    };
-
-    const addMultiImageSlide = (title: string, images: string[], startIndex: number, count: number, subtitle?: string) => {
-      const slide = pptx.addSlide();
-      slide.background = { color: BG_COLOR };
-
+      // 简洁标题
       slide.addText(title, {
         x: 0.3, y: 0.15, w: 12, h: 0.4,
-        fontSize: 16, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+        fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
       });
 
       if (subtitle) {
@@ -624,9 +624,43 @@ export const exportToPPT = async () => {
       }
 
       const startY = subtitle ? 0.8 : 0.6;
-      const areaH = 7.5 - startY - 0.2;
-      const areaW = 12.8;
-      const padding = 0.15;
+      const maxW = 12.7, maxH = 7.5 - startY - 0.15;
+      const imgRatio = imgData.width / imgData.height;
+      const areaRatio = maxW / maxH;
+
+      let w: number, h: number;
+      if (imgRatio > areaRatio) { w = maxW; h = maxW / imgRatio; }
+      else { h = maxH; w = maxH * imgRatio; }
+
+      slide.addImage({
+        data: imgData.data,
+        x: (13.33 - w) / 2,
+        y: startY + (maxH - h) / 2,
+        w, h,
+      });
+    };
+
+    // 辅助函数：多图页面（优化排版）
+    const addMultiImageSlide = (title: string, images: string[], startIndex: number, count: number, subtitle?: string) => {
+      const slide = pptx.addSlide();
+      slide.background = { color: BG_COLOR };
+
+      slide.addText(title, {
+        x: 0.3, y: 0.1, w: 12, h: 0.35,
+        fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      });
+
+      if (subtitle) {
+        slide.addText(subtitle, {
+          x: 0.3, y: 0.4, w: 12, h: 0.2,
+          fontSize: 9, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+        });
+      }
+
+      const startY = subtitle ? 0.65 : 0.5;
+      const areaH = 7.5 - startY - 0.1;
+      const areaW = 12.9;
+      const padding = 0.1;
 
       const validImages = images.slice(startIndex, startIndex + count)
         .map(path => ({ path, data: loadedImages.get(path) }))
@@ -634,6 +668,7 @@ export const exportToPPT = async () => {
 
       if (validImages.length === 0) return;
 
+      // 优化布局
       const layouts: { [key: number]: { cols: number; rows: number } } = {
         1: { cols: 1, rows: 1 }, 2: { cols: 2, rows: 1 }, 3: { cols: 3, rows: 1 },
         4: { cols: 2, rows: 2 }, 5: { cols: 3, rows: 2 }, 6: { cols: 3, rows: 2 },
@@ -653,7 +688,7 @@ export const exportToPPT = async () => {
         if (imgRatio > cellRatio) { w = cellW; h = cellW / imgRatio; }
         else { h = cellH; w = cellH * imgRatio; }
 
-        const cellX = 0.25 + padding + col * (cellW + padding);
+        const cellX = 0.2 + padding + col * (cellW + padding);
         const cellY = startY + padding + row * (cellH + padding);
 
         slide.addImage({
@@ -665,18 +700,58 @@ export const exportToPPT = async () => {
       });
     };
 
+    // 辅助函数：视频页面（嵌入真实视频）
+    const addVideoSlide = (title: string, videoPath: string, subtitle?: string) => {
+      const videoData = loadedVideos.get(videoPath);
+      const thumbnail = loadedImages.get(videoPath);
+      if (!videoData || !thumbnail) return;
+
+      const slide = pptx.addSlide();
+      slide.background = { color: BG_COLOR };
+
+      slide.addText(title, {
+        x: 0.3, y: 0.15, w: 12, h: 0.4,
+        fontSize: 14, bold: true, color: PRIMARY_COLOR, fontFace: 'Microsoft YaHei',
+      });
+
+      if (subtitle) {
+        slide.addText(subtitle, {
+          x: 0.3, y: 0.5, w: 12, h: 0.25,
+          fontSize: 10, color: MUTED_COLOR, fontFace: 'Microsoft YaHei',
+        });
+      }
+
+      const startY = subtitle ? 0.8 : 0.6;
+      const maxW = 12, maxH = 6.5;
+      const videoRatio = thumbnail.width / thumbnail.height;
+      const areaRatio = maxW / maxH;
+
+      let w: number, h: number;
+      if (videoRatio > areaRatio) { w = maxW; h = maxW / videoRatio; }
+      else { h = maxH; w = maxH * videoRatio; }
+
+      // 嵌入视频
+      slide.addMedia({
+        type: 'video',
+        data: videoData,
+        x: (13.33 - w) / 2,
+        y: startY + (maxH - h) / 2,
+        w, h,
+      });
+    };
+
     checkAbort();
     progressUI.update(60, '添加游戏UI...');
 
-    // === 游戏UI设计 ===
+    // === 游戏UI设计（每页一张）===
     allWorksData.gameUI.images.forEach((imgPath, idx) => {
       addSingleImageSlide(allWorksData.gameUI.title, imgPath, idx === 0 ? allWorksData.gameUI.description : undefined);
     });
 
     checkAbort();
-    progressUI.update(70, '添加绘画作品...');
+    progressUI.update(68, '添加绘画作品...');
 
-    // === 绘画 ===
+    // === 绘画（每页6张）===
     for (let i = 0; i < allWorksData.painting.images.length; i += 6) {
       addMultiImageSlide(allWorksData.painting.title, allWorksData.painting.images, i, 6, i === 0 ? allWorksData.painting.description : undefined);
     }
@@ -700,15 +775,15 @@ export const exportToPPT = async () => {
     }
 
     checkAbort();
-    progressUI.update(80, '添加动画截图...');
+    progressUI.update(82, '添加动画视频...');
 
-    // === 动画视频截图 ===
-    for (let i = 0; i < animation.videos.length; i += 6) {
-      addMultiImageSlide(`${allWorksData.threeD.title} - ${animation.title}`, animation.videos, i, 6, i === 0 ? '动画作品截图' : undefined);
-    }
+    // === 动画视频（嵌入真实视频）===
+    animation.videos.forEach((videoPath, idx) => {
+      addVideoSlide(`${allWorksData.threeD.title} - ${animation.title}`, videoPath, idx === 0 ? '动画作品演示' : undefined);
+    });
 
     checkAbort();
-    progressUI.update(85, '添加平面设计...');
+    progressUI.update(88, '添加平面设计...');
 
     // === 平面设计 ===
     for (let i = 0; i < allWorksData.graphic.images.length; i += 6) {
@@ -716,7 +791,7 @@ export const exportToPPT = async () => {
     }
 
     checkAbort();
-    progressUI.update(90, '添加联系方式...');
+    progressUI.update(92, '添加联系方式...');
 
     // === 联系方式 ===
     const slideContact = pptx.addSlide();
@@ -757,7 +832,7 @@ export const exportToPPT = async () => {
     });
 
     checkAbort();
-    progressUI.update(95, '生成文件...');
+    progressUI.update(96, '生成文件...');
 
     await pptx.writeFile({ fileName: '何亚鹏_作品集.pptx' });
 
