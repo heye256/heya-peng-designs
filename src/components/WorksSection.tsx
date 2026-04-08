@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Palette, Box, PenTool } from 'lucide-react';
+import { Layers, Palette, Box, PenTool, Sparkles } from 'lucide-react';
 import ProjectDetail from './ProjectDetail';
 
 interface SubCategory {
