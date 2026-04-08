@@ -278,13 +278,24 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                 animationDelay: `${index * 0.1}s`,
               }}
             >
-              {/* Background Image */}
+              {/* Background Image/Video */}
               <div className="absolute inset-0">
-                <img
-                  src={category.images[0].src}
-                  alt={category.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {category.images[0].type === 'video' ? (
+                  <video
+                    src={category.images[0].src}
+                    muted
+                    loop
+                    autoPlay
+                    playsInline
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                ) : (
+                  <img
+                    src={category.images[0].src}
+                    alt={category.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
               </div>
 
