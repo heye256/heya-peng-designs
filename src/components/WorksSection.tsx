@@ -21,6 +21,44 @@ interface Category {
 
 const categories: Category[] = [
   {
+    id: 'aigc',
+    title: 'AIGC',
+    subtitle: '视频 · 平面',
+    icon: <Sparkles className="w-8 h-8" />,
+    description: 'AI生成内容创作，探索人工智能与创意设计的融合边界，用前沿技术赋能视觉表达。',
+    tools: ['Midjourney', 'Stable Diffusion', 'RunwayML', 'ComfyUI'],
+    images: [
+      { src: '/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
+    ],
+    subCategories: [
+      {
+        id: 'aigc-video',
+        title: '视频',
+        images: [
+          { src: '/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (5).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (6).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (7).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (8).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (9).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (10).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/AIGC/V001 (11).mp4', alt: 'AIGC视频', type: 'video' },
+        ],
+      },
+      {
+        id: 'aigc-graphic',
+        title: '平面',
+        images: [
+          { src: '/placeholder.svg', alt: 'AIGC平面作品（待添加）' },
+          { src: '/placeholder.svg', alt: 'AIGC平面作品（待添加）' },
+          { src: '/placeholder.svg', alt: 'AIGC平面作品（待添加）' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'game-ui',
     title: '游戏UI设计',
     icon: <Layers className="w-8 h-8" />,
