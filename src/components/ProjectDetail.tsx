@@ -358,10 +358,10 @@ const ProjectDetail = ({
   }, [currentProject, activeSubCategory]);
   const displayImages = getCurrentImages();
 
-  // 切换项目时重置子分类（3D设计默认选中第一个子分类）
+  // 切换项目时重置子分类（3D设计和AIGC默认选中第一个子分类）
   useEffect(() => {
     const project = projects[currentIndex];
-    if (project.id === '3d-design' && project.subCategories && project.subCategories.length > 0) {
+    if ((project.id === '3d-design' || project.id === 'aigc') && project.subCategories && project.subCategories.length > 0) {
       setActiveSubCategory(project.subCategories[0].id);
     } else {
       setActiveSubCategory(null);
@@ -413,8 +413,8 @@ const ProjectDetail = ({
           {/* Sub Categories Tabs */}
           {currentProject.subCategories && currentProject.subCategories.length > 0 && (
             <div className="flex flex-wrap gap-2 md:gap-3 mb-6 md:mb-8 pb-4 border-b border-border justify-start md:justify-center overflow-x-auto">
-              {/* 3D设计板块不显示"全部作品"按钮 */}
-              {currentProject.id !== '3d-design' && (
+              {/* 3D设计和AIGC板块不显示"全部作品"按钮 */}
+              {!['3d-design', 'aigc'].includes(currentProject.id) && (
                 <button 
                   onClick={() => setActiveSubCategory(null)} 
                   className={`px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap ${activeSubCategory === null ? 'bg-primary text-primary-foreground shadow-lg' : 'bg-card border border-border text-muted-foreground hover:border-primary hover:text-primary'}`}

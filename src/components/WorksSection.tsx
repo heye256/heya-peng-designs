@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Palette, Box, PenTool } from 'lucide-react';
+import { Layers, Palette, Box, PenTool, Sparkles } from 'lucide-react';
 import ProjectDetail from './ProjectDetail';
 
 interface SubCategory {
@@ -20,6 +20,44 @@ interface Category {
 }
 
 const categories: Category[] = [
+  {
+    id: 'aigc',
+    title: 'AIGC',
+    subtitle: '视频 · 平面',
+    icon: <Sparkles className="w-8 h-8" />,
+    description: 'AI生成内容创作，探索人工智能与创意设计的融合边界，用前沿技术赋能视觉表达。',
+    tools: ['Midjourney', 'Stable Diffusion', 'RunwayML', 'ComfyUI'],
+    images: [
+      { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
+    ],
+    subCategories: [
+      {
+        id: 'aigc-video',
+        title: '视频',
+        images: [
+          { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (5).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (6).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (7).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (8).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (9).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (10).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (11).mp4', alt: 'AIGC视频', type: 'video' },
+        ],
+      },
+      {
+        id: 'aigc-graphic',
+        title: '平面',
+        images: [
+          { src: '/placeholder.svg', alt: 'AIGC平面作品（待添加）' },
+          { src: '/placeholder.svg', alt: 'AIGC平面作品（待添加）' },
+          { src: '/placeholder.svg', alt: 'AIGC平面作品（待添加）' },
+        ],
+      },
+    ],
+  },
   {
     id: 'game-ui',
     title: '游戏UI设计',
@@ -240,13 +278,26 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                 animationDelay: `${index * 0.1}s`,
               }}
             >
-              {/* Background Image */}
+              {/* Background Image / Video Cover */}
               <div className="absolute inset-0">
-                <img
-                  src={category.images[0].src}
-                  alt={category.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                {category.images[0]?.type === 'video' ? (
+                  <video
+                    src={category.images[0].src}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    x5-playsinline="true"
+                    webkit-playsinline="true"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <img
+                    src={category.images[0].src}
+                    alt={category.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                )}
                 <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
               </div>
 
