@@ -28,23 +28,23 @@ const categories: Category[] = [
     description: 'AI生成内容创作，探索人工智能与创意设计的融合边界，用前沿技术赋能视觉表达。',
     tools: ['Midjourney', 'Stable Diffusion', 'RunwayML', 'ComfyUI'],
     images: [
-      { src: '/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
+      { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
     ],
     subCategories: [
       {
         id: 'aigc-video',
         title: '视频',
         images: [
-          { src: '/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (5).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (6).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (7).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (8).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (9).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (10).mp4', alt: 'AIGC视频', type: 'video' },
-          { src: '/AIGC/V001 (11).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (5).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (6).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (7).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (8).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (9).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (10).mp4', alt: 'AIGC视频', type: 'video' },
+          { src: '/videos/AIGC/V001 (11).mp4', alt: 'AIGC视频', type: 'video' },
         ],
       },
       {
@@ -278,16 +278,18 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                 animationDelay: `${index * 0.1}s`,
               }}
             >
-              {/* Background Image/Video */}
+              {/* Background Image / Video Cover */}
               <div className="absolute inset-0">
-                {category.images[0].type === 'video' ? (
+                {category.images[0]?.type === 'video' ? (
                   <video
                     src={category.images[0].src}
+                    autoPlay
                     muted
                     loop
-                    autoPlay
                     playsInline
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    x5-playsinline="true"
+                    webkit-playsinline="true"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <img
