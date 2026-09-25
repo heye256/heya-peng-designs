@@ -40,6 +40,7 @@ const categories: Category[] = [
           { src: 'bilibili:BV15shU6uENB', alt: 'AIGC视频', type: 'bilibili' },
           { src: 'bilibili:BV1sKhD6FE4n', alt: 'AIGC视频', type: 'bilibili' },
           { src: 'bilibili:BV14chD6YECw', alt: 'AIGC视频', type: 'bilibili' },
+          { src: 'bilibili:BV14chD6YE8y', alt: 'AIGC视频', type: 'bilibili' },
           { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
           { src: '/videos/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
           { src: '/videos/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
