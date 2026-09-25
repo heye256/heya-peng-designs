@@ -14,7 +14,7 @@ interface Category {
   subtitle?: string;
   icon: React.ReactNode;
   images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' }[];
-  cover?: { src: string; alt?: string };
+  cover?: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' };
   description: string;
   tools: string[];
   subCategories?: SubCategory[];
