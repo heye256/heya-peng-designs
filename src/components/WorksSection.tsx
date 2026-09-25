@@ -14,6 +14,7 @@ interface Category {
   subtitle?: string;
   icon: React.ReactNode;
   images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' }[];
+  cover?: { src: string; alt?: string };
   description: string;
   tools: string[];
   subCategories?: SubCategory[];
@@ -27,6 +28,7 @@ const categories: Category[] = [
     icon: <Sparkles className="w-8 h-8" />,
     description: 'AI生成内容创作，探索人工智能与创意设计的融合边界，用前沿技术赋能视觉表达。',
     tools: ['Midjourney', 'Stable Diffusion', 'RunwayML', 'ComfyUI'],
+    cover: { src: '/image/works/aigc/cover.webp', alt: 'AIGC' },
     images: [
       { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
     ],
@@ -270,7 +272,9 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
 
         {/* Category Cards */}
         <div className="flex flex-col gap-4 md:gap-8 max-w-[1400px] mx-auto">
-          {categories.map((category, index) => (
+          {categories.map((category, index) => {
+            const cover = category.cover ?? category.images[0];
+            return (
             <div
               key={category.id}
               onClick={() => openProject(index)}
@@ -281,9 +285,9 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
             >
               {/* Background Image / Video Cover */}
               <div className="absolute inset-0">
-                {category.images[0]?.type === 'video' ? (
+                {cover?.type === 'video' ? (
                   <video
-                    src={category.images[0].src}
+                    src={cover.src}
                     autoPlay
                     muted
                     loop
@@ -294,8 +298,8 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                   />
                 ) : (
                   <img
-                    src={category.images[0].src}
-                    alt={category.title}
+                    src={cover?.src}
+                    alt={cover?.alt || category.title}
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                   />
                 )}
@@ -346,7 +350,8 @@ const WorksSection = ({ sectionRef }: WorksSectionProps) => {
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
