@@ -35,6 +35,7 @@ const categories: Category[] = [
         id: 'aigc-video',
         title: '视频',
         images: [
+          { src: 'bilibili:BV15shU6uENB', alt: 'AIGC视频', type: 'bilibili' },
           { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
           { src: '/videos/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
           { src: '/videos/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
