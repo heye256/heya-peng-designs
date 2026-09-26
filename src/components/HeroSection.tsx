@@ -27,7 +27,6 @@ const HeroSection = ({
 
         {/* 深色渐隐遮罩 - 移动端全覆盖，桌面端从左侧渐变 */}
         
-      {/* 如果前面有背景/特效容器，则保留该闭合标签，否则请删除 */}
       </div>
 
       {/* Content */}
@@ -42,11 +41,15 @@ const HeroSection = ({
 
             {/* AI 技术亮点 */}
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-primary mb-4 md:mb-6 animate-pulse">
-              能够将AI与自身技术结合高效地完成工作内容
+              能够将AI与自身技术结合高效的完成工作内容
             </p>
 
-            {/* 描述文字：已补齐开标签 <p> 并添加行高与正文字色 */}
-            <p className="text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed mb-6 md:mb-8">
+            {/* 描述文字 */}
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed mb-6 md:mb-10 max-w-2xl text-white/90">
+              专注
+              <span className="text-primary font-medium"> 平面设计 </span>
+              与
+              <span className="text-primary font-medium"> 3D美术 </span>。
               <br className="hidden sm:block" />
               <span className="sm:hidden"> </span>
               专注影视与广告领域的 AIGC 视觉创作者，擅长融合 3D 制作流程与生成式 AI 技术，
@@ -54,10 +57,7 @@ const HeroSection = ({
             </p>
 
             {/* 按钮 */}
-            <button 
-              onClick={onBrowseWorks} 
-              className="inline-flex items-center gap-2 md:gap-3 bg-primary text-black font-bold px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl text-base md:text-lg hover:opacity-90 transition"
-            >
+            <button onClick={onBrowseWorks} className="inline-flex items-center gap-2 md:gap-3 bg-primary text-black font-bold px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl text-base md:text-lg hover:opacity-90 transition">
               浏览作品
               <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />
             </button>
