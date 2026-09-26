@@ -41,7 +41,7 @@ const HeroSection = ({
 
             {/* AI 技术亮点 */}
             <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-primary mb-4 md:mb-6 animate-pulse">
-              能够熟练的使用 AI 最新技术高效的完成工作内容
+              能够将AI与自身技术结合高效的完成工作内容
             </p>
 
             {/* 描述文字 */}
@@ -52,8 +52,8 @@ const HeroSection = ({
               <span className="text-primary font-medium"> 3D美术 </span>。
               <br className="hidden sm:block" />
               <span className="sm:hidden"> </span>
-              熟悉 PS、AI、Maya、Substance Painter、ZBrush、Marvelous Designer、Nuke
-              等平面设计软件和三维动画制作软件。
+              专注影视与广告领域的 AIGC 视觉创作者，擅长融合 3D 制作流程与生成式 AI 技术，
+              依托扎实的美术绘画功底与审美把控，提供高完成度的商业视觉方案。
             </p>
 
             {/* 按钮 */}
