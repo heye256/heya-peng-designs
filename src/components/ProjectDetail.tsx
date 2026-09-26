@@ -4,6 +4,7 @@ interface ProjectImage {
   src: string;
   alt?: string;
   type?: 'image' | 'video' | 'bilibili';
+  orientation?: 'landscape' | 'portrait';
 }
 interface SubCategory {
   id: string;
@@ -265,14 +266,18 @@ const VideoPlayer = ({
 /* ===================== Bilibili Embed ===================== */
 const BilibiliEmbed = ({
   bvid,
+  orientation = 'landscape',
   className
 }: {
   bvid: string;
+  orientation?: 'landscape' | 'portrait';
   className?: string;
 }) => {
+  const isPortrait = orientation === 'portrait';
+
   return (
-    <div className={`relative overflow-hidden rounded-xl ${className}`}>
-      <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+    <div className={`relative overflow-hidden rounded-xl mx-auto ${isPortrait ? 'w-full max-w-md' : 'w-full max-w-5xl'} ${className}`}>
+      <div className={isPortrait ? 'relative w-full aspect-[9/16]' : 'relative w-full aspect-video'}>
         <iframe
           src={`https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&autoplay=0`}
           className="absolute inset-0 w-full h-full"
@@ -307,7 +312,8 @@ const MediaItem = ({
     return (
       <BilibiliEmbed
         bvid={bvid}
-        className="w-full shadow-card hover:shadow-gold transition-shadow duration-300"
+        orientation={item.orientation}
+        className="shadow-card hover:shadow-gold transition-shadow duration-300"
       />
     );
   }
@@ -435,7 +441,7 @@ const ProjectDetail = ({
           )}
 
           {/* Images */}
-          {(currentProject.id === 'game-ui' || (currentProject.id === '3d-design' && activeSubCategory === 'animation')) ? (
+          {(currentProject.id === 'game-ui' || (currentProject.id === '3d-design' && activeSubCategory === 'animation') || (currentProject.id === 'aigc' && activeSubCategory === 'aigc-video')) ? (
             /* 游戏UI和三维动画 - 纵向居中大图布局 */
             <div className="flex flex-col items-center gap-4 md:gap-8 max-w-4xl mx-auto">
               {displayImages.map((img, idx) => (

@@ -5,7 +5,7 @@ import ProjectDetail from './ProjectDetail';
 interface SubCategory {
   id: string;
   title: string;
-  images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' }[];
+  images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili'; orientation?: 'landscape' | 'portrait' }[];
 }
 
 interface Category {
@@ -13,8 +13,8 @@ interface Category {
   title: string;
   subtitle?: string;
   icon: React.ReactNode;
-  images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' }[];
-  cover?: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili' };
+  images: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili'; orientation?: 'landscape' | 'portrait' }[];
+  cover?: { src: string; alt?: string; type?: 'image' | 'video' | 'bilibili'; orientation?: 'landscape' | 'portrait' };
   description: string;
   tools: string[];
   subCategories?: SubCategory[];
@@ -37,10 +37,11 @@ const categories: Category[] = [
         id: 'aigc-video',
         title: '视频',
         images: [
-          { src: 'bilibili:BV15shU6uENB', alt: 'AIGC视频', type: 'bilibili' },
-          { src: 'bilibili:BV1sKhD6FE4n', alt: 'AIGC视频', type: 'bilibili' },
-          { src: 'bilibili:BV14chD6YECw', alt: 'AIGC视频', type: 'bilibili' },
-          { src: 'bilibili:BV14chD6YE8y', alt: 'AIGC视频', type: 'bilibili' },
+          { src: 'bilibili:BV15shU6uENB', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
+          { src: 'bilibili:BV1sKhD6FE4n', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
+          { src: 'bilibili:BV14chD6YECw', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
+          { src: 'bilibili:BV14chD6YE8y', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
+          { src: 'bilibili:BV1xPhD6hEs8', alt: 'AIGC竖版视频', type: 'bilibili', orientation: 'portrait' },
           { src: '/videos/AIGC/V001 (1).mp4', alt: 'AIGC视频', type: 'video' },
           { src: '/videos/AIGC/V001 (2).mp4', alt: 'AIGC视频', type: 'video' },
           { src: '/videos/AIGC/V001 (3).mp4', alt: 'AIGC视频', type: 'video' },
