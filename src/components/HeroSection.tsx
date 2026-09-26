@@ -1,46 +1,48 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-    <meta name="renderer" content="webkit" />
-    <meta name="force-rendering" content="webkit" />
-    <meta name="format-detection" content="telephone=no,email=no,address=no" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-touch-fullscreen" content="yes" />
-    <!-- 微信/QQ浏览器兼容 -->
-    <meta name="x5-orientation" content="portrait" />
-    <meta name="x5-fullscreen" content="true" />
-    <meta name="x5-page-mode" content="app" />
-    <meta name="x5-video-player-type" content="h5" />
-    <meta name="x5-video-player-fullscreen" content="true" />
-    <meta name="x5-video-orientation" content="portrait" />
-    <meta name="screen-orientation" content="portrait" />
-    <meta name="full-screen" content="yes" />
-    <meta name="browsermode" content="application" />
-    <meta name="layoutmode" content="fitscreen" />
-    <meta name="wap-font-scale" content="no" />
-    
-    <title>何亚鹏 | 平面设计与3D美术作品集</title>
-    <meta name="description" content="何亚鹏的个人作品集 - 专注平面设计与3D美术，熟悉PS、AI、Substance Painter、ZBrush、Marvelous Designer、Nuke等专业软件。" />
-    <meta name="keywords" content="何亚鹏, 平面设计, 3D美术, 游戏UI设计, 绘画, 建模, 渲染, 作品集" />
-    <meta name="author" content="何亚鹏" />
-    
-    <meta property="og:title" content="何亚鹏 | 平面设计与3D美术作品集" />
-    <meta property="og:description" content="专注平面设计与3D美术的设计师作品集" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+import { ChevronDown } from 'lucide-react';
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@heyapeng" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+interface HeroSectionProps {
+  onBrowseWorks?: () => void;
+}
 
-    <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
-</html>
+export const HeroSection = ({ onBrowseWorks }: HeroSectionProps) => {
+  return (
+    <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden py-20">
+      {/* Content */}
+      <div className="relative z-10 w-full px-4 md:px-0">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="max-w-3xl">
+            {/* 标题 */}
+            <h1 className="font-bold leading-tight mb-4 md:mb-6 text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl">
+              <span className="text-white">你好，我是</span>{' '}
+              <span className="text-gradient-gold">何亚鹏</span>
+            </h1>
+
+            {/* AI 技术亮点 */}
+            <p className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold text-primary mb-4 md:mb-6 animate-pulse">
+              能够将AI与自身技术结合高效地完成工作内容
+            </p>
+
+            {/* 描述文字 */}
+            <p className="text-sm sm:text-base md:text-lg text-gray-300 leading-relaxed mb-6 md:mb-8">
+              专注影视与广告领域的 AIGC 视觉创作者，擅长融合 3D 制作流程与生成式 AI 技术，
+              依托扎实的美术绘画功底与审美把控，提供高完成度的商业视觉方案。
+            </p>
+
+            {/* 按钮 */}
+            {onBrowseWorks && (
+              <button 
+                onClick={onBrowseWorks} 
+                className="inline-flex items-center gap-2 md:gap-3 bg-primary text-black font-bold px-6 md:px-8 py-3 md:py-4 rounded-xl md:rounded-2xl text-base md:text-lg hover:opacity-90 transition"
+              >
+                浏览作品
+                <ChevronDown className="w-4 h-4 md:w-5 md:h-5" />
+              </button>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default HeroSection;
