@@ -45,11 +45,6 @@ const HeroSection = ({
             </p>
 
             {/* 描述文字 */}
-            <p className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed mb-6 md:mb-10 max-w-2xl text-white/90">
-              专注
-              <span className="text-primary font-medium"> 平面设计 </span>
-              与
-              <span className="text-primary font-medium"> 3D美术 </span>。
               <br className="hidden sm:block" />
               <span className="sm:hidden"> </span>
               专注影视与广告领域的 AIGC 视觉创作者，擅长融合 3D 制作流程与生成式 AI 技术，
