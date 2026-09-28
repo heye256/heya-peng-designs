@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
+import { X, ChevronUp, ChevronDown, ChevronLeft, ChevronRight, ZoomIn, ExternalLink } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 interface ProjectImage {
   src: string;
   alt?: string;
@@ -274,14 +275,44 @@ const BilibiliEmbed = ({
   className?: string;
 }) => {
   const isPortrait = orientation === 'portrait';
+  const [quality, setQuality] = useState(80);
+  const qualityOptions = [
+    { value: 80, label: '1080P' },
+    { value: 64, label: '720P' },
+    { value: 32, label: '480P' },
+  ];
 
   return (
-    <div className={`relative overflow-hidden rounded-xl mx-auto ${isPortrait ? 'w-full max-w-md' : 'w-full max-w-5xl'} ${className}`}>
-      <div className={isPortrait ? 'relative w-full aspect-[9/16]' : 'relative w-full aspect-video'}>
+    <div className={`mx-auto ${isPortrait ? 'w-full max-w-md' : 'w-full max-w-5xl'} ${className}`}>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-1 rounded-md border border-border bg-card p-1" aria-label="视频清晰度">
+          {qualityOptions.map((option) => (
+            <Button
+              key={option.value}
+              type="button"
+              size="sm"
+              variant={quality === option.value ? 'default' : 'ghost'}
+              className="h-8 px-3"
+              onClick={() => setQuality(option.value)}
+              aria-pressed={quality === option.value}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+        <Button asChild size="sm" variant="outline">
+          <a href={`https://www.bilibili.com/video/${bvid}/`} target="_blank" rel="noopener noreferrer">
+            前往B站
+            <ExternalLink aria-hidden="true" />
+          </a>
+        </Button>
+      </div>
+      <div className={`relative overflow-hidden rounded-xl ${isPortrait ? 'w-full aspect-[9/16]' : 'w-full aspect-video'}`}>
         <iframe
-          src={`https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&qn=80&autoplay=0`}
+          key={`${bvid}-${quality}`}
+          src={`https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&quality=${quality}&qn=${quality}&autoplay=0`}
           className="absolute inset-0 w-full h-full"
-          title="哔哩哔哩视频播放器"
+          title={`哔哩哔哩视频播放器（${qualityOptions.find((option) => option.value === quality)?.label}）`}
           allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
           scrolling="no"
