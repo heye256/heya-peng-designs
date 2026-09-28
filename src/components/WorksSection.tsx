@@ -42,6 +42,7 @@ const categories: Category[] = [
           { src: 'bilibili:BV14chD6YECw', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
           { src: 'bilibili:BV14chD6YE8y', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
           { src: 'bilibili:BV1xPhD6hEs8', alt: 'AIGC视频', type: 'bilibili', orientation: 'portrait' },
+          { src: 'bilibili:BV1EJhD6nEFX', alt: 'AIGC视频', type: 'bilibili', orientation: 'landscape' },
         ],
       },
       {
