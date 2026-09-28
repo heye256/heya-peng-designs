@@ -279,8 +279,10 @@ const BilibiliEmbed = ({
     <div className={`relative overflow-hidden rounded-xl mx-auto ${isPortrait ? 'w-full max-w-md' : 'w-full max-w-5xl'} ${className}`}>
       <div className={isPortrait ? 'relative w-full aspect-[9/16]' : 'relative w-full aspect-video'}>
         <iframe
-          src={`https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&autoplay=0`}
+          src={`https://player.bilibili.com/player.html?bvid=${bvid}&high_quality=1&qn=80&autoplay=0`}
           className="absolute inset-0 w-full h-full"
+          title="哔哩哔哩视频播放器"
+          allow="autoplay; fullscreen; picture-in-picture"
           allowFullScreen
           scrolling="no"
           frameBorder="0"
